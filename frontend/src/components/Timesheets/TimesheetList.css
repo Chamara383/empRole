@@ -1,0 +1,335 @@
+.timesheet-list {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.timesheet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.timesheet-header h1 {
+  color: #333;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.add-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  border: 1px solid #fcc;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-group label {
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.filter-input,
+.filter-select {
+  padding: 10px 12px;
+  border: 2px solid #e1e5e9;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  background: white;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.timesheet-table-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.timesheet-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.timesheet-table th {
+  background: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+  padding: 16px;
+  text-align: left;
+  border-bottom: 2px solid #e9ecef;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timesheet-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.timesheet-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.timesheet-date {
+  font-weight: 600;
+  color: #333;
+}
+
+.timesheet-employee {
+  font-weight: 500;
+  color: #333;
+}
+
+.timesheet-time {
+  font-family: 'Courier New', monospace;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.timesheet-hours {
+  font-weight: 600;
+  color: #28a745;
+  text-align: center;
+}
+
+.timesheet-ot {
+  font-weight: 600;
+  color: #e74c3c;
+  text-align: center;
+}
+
+.timesheet-type {
+  text-align: center;
+}
+
+.type-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.type-badge.regular {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.type-badge.vacation {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.type-badge.holiday {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.timesheet-status {
+  text-align: center;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-draft {
+  background: #f8f9fa;
+  color: #6c757d;
+}
+
+.status-submitted {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.timesheet-actions {
+  text-align: center;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  margin: 0 2px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+
+.action-btn.edit:hover {
+  background: #e3f2fd;
+  transform: scale(1.1);
+}
+
+.action-btn.delete:hover {
+  background: #ffebee;
+  transform: scale(1.1);
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.page-btn {
+  background: white;
+  border: 2px solid #e1e5e9;
+  color: #333;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-info {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.loading {
+  text-align: center;
+  color: #666;
+  font-size: 1rem;
+  padding: 40px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .timesheet-list {
+    padding: 15px;
+  }
+  
+  .timesheet-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  
+  .timesheet-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .filters {
+    grid-template-columns: 1fr;
+  }
+  
+  .timesheet-table-container {
+    overflow-x: auto;
+  }
+  
+  .timesheet-table {
+    min-width: 800px;
+  }
+  
+  .timesheet-table th,
+  .timesheet-table td {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+  }
+  
+  .type-badges {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .pagination {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
