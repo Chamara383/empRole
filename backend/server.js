@@ -24,7 +24,7 @@ app.use('/api/employees', require('./routes/employees'));
 app.use('/api/timesheets', require('./routes/timesheets'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/password-reset', require('./routes/passwordReset'));
-app.use('/api/employee-password-reset', require('./routes/employeePasswordReset'));
+app.use('/api/user-management', require('./routes/userManagement'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -128,17 +128,10 @@ const Login = () => {
         </form>
 
         <div className="auth-footer">
-          <p>
-            <Link to="/forgot-password" className="forgot-password-link">
-              Forgot your password?
-            </Link>
-          </p>
-          <p>
-            <Link to="/employee-password-reset" className="employee-reset-link">
-              Employee Password Reset
-            </Link>
-          </p>
           <p>Labor Grid Payroll System</p>
+          <p className="admin-note">
+            For password assistance, contact your administrator
+          </p>
         </div>
       </div>
     </div>

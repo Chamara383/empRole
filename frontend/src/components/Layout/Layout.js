@@ -12,7 +12,8 @@ const Layout = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: '🏠', roles: ['admin', 'manager', 'employee'] },
-    { name: 'Employees', href: '/employees', icon: '👥', roles: ['admin'] },
+    { name: 'Employees', href: '/employees', icon: '👥', roles: ['admin', 'manager'] },
+    { name: 'User Management', href: '/user-management', icon: '👤', roles: ['admin'] },
     { name: 'Timesheets', href: '/timesheets', icon: '⏰', roles: ['admin', 'manager', 'employee'] },
     { name: 'Reports', href: '/reports', icon: '📊', roles: ['admin', 'manager', 'employee'] },
   ];
@@ -113,14 +114,6 @@ const Layout = ({ children }) => {
                   >
                     <span className="dropdown-icon">👤</span>
                     Profile & Settings
-                  </Link>
-                  <Link 
-                    to="/change-password" 
-                    className="dropdown-item"
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    <span className="dropdown-icon">🔐</span>
-                    Change Password
                   </Link>
                   <div className="dropdown-divider"></div>
                   <button 

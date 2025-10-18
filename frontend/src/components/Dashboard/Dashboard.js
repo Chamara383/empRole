@@ -228,13 +228,23 @@ const Dashboard = () => {
                 </button>
               </>
             )}
-            {user.role === 'admin' && (
+            {(user.role === 'admin' || user.role === 'manager') && (
               <button 
                 className="action-btn secondary"
                 onClick={() => navigate('/employees')}
               >
                 Manage Employees
               </button>
+            )}
+            {user.role === 'admin' && (
+              <>
+                <button 
+                  className="action-btn secondary"
+                  onClick={() => navigate('/user-management')}
+                >
+                  Manage Users
+                </button>
+              </>
             )}
             {user.role === 'employee' && (
               <button 

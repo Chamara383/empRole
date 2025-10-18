@@ -45,6 +45,16 @@
   border: 1px solid #fcc;
 }
 
+.success-message {
+  background: #efe;
+  color: #2e7d32;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  border: 1px solid #c8e6c9;
+}
+
 .filters {
   display: flex;
   gap: 16px;
@@ -201,6 +211,28 @@
 
 .action-btn.delete:hover {
   background: #ffebee;
+  transform: scale(1.1);
+}
+
+.action-btn.deactivate {
+  background: #fff3e0;
+  color: #f57c00;
+  border: 1px solid #ffb74d;
+}
+
+.action-btn.deactivate:hover {
+  background: #ffe0b2;
+  transform: scale(1.1);
+}
+
+.action-btn.activate {
+  background: #e8f5e8;
+  color: #2e7d32;
+  border: 1px solid #81c784;
+}
+
+.action-btn.activate:hover {
+  background: #c8e6c9;
   transform: scale(1.1);
 }
 

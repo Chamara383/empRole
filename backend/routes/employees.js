@@ -68,10 +68,10 @@ router.get('/:id', [auth, adminOrManager], async (req, res) => {
 
 // @route   POST /api/employees
 // @desc    Create new employee
-// @access  Private (Admin only)
+// @access  Private (Admin/Manager)
 router.post('/', [
   auth,
-  adminOnly,
+  adminOrManager,
   body('employeeId').notEmpty().withMessage('Employee ID is required'),
   body('name').notEmpty().withMessage('Name is required'),
   body('position').notEmpty().withMessage('Position is required'),
@@ -178,8 +178,76 @@ router.put('/:id', [
   }
 });
 
+// @route   PUT /api/employees/:id/deactivate
+// @desc    Deactivate employee (soft delete)
+// @access  Private (Admin/Manager)
+router.put('/:id/deactivate', [auth, adminOrManager], async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+    
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    if (employee.status === 'inactive') {
+      return res.status(400).json({ message: 'Employee is already deactivated' });
+    }
+
+    // Soft delete by changing status
+    employee.status = 'inactive';
+    await employee.save();
+
+    res.json({ 
+      message: 'Employee deactivated successfully',
+      employee: {
+        id: employee._id,
+        name: employee.name,
+        employeeId: employee.employeeId,
+        status: employee.status
+      }
+    });
+  } catch (error) {
+    console.error('Deactivate employee error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   PUT /api/employees/:id/activate
+// @desc    Activate employee
+// @access  Private (Admin/Manager)
+router.put('/:id/activate', [auth, adminOrManager], async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+    
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    if (employee.status === 'active') {
+      return res.status(400).json({ message: 'Employee is already active' });
+    }
+
+    // Activate employee
+    employee.status = 'active';
+    await employee.save();
+
+    res.json({ 
+      message: 'Employee activated successfully',
+      employee: {
+        id: employee._id,
+        name: employee.name,
+        employeeId: employee.employeeId,
+        status: employee.status
+      }
+    });
+  } catch (error) {
+    console.error('Activate employee error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   DELETE /api/employees/:id
-// @desc    Soft delete employee
+// @desc    Permanently delete employee
 // @access  Private (Admin only)
 router.delete('/:id', [auth, adminOnly], async (req, res) => {
   try {
@@ -189,11 +257,22 @@ router.delete('/:id', [auth, adminOnly], async (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    // Soft delete by changing status
-    employee.status = 'inactive';
-    await employee.save();
+    // Check if employee has associated timesheets or other data
+    // You might want to add additional checks here based on your business logic
+    const employeeId = employee.employeeId;
+    const employeeName = employee.name;
 
-    res.json({ message: 'Employee deactivated successfully' });
+    // Permanently delete the employee
+    await Employee.findByIdAndDelete(req.params.id);
+
+    res.json({ 
+      message: 'Employee permanently deleted successfully',
+      deletedEmployee: {
+        id: employee._id,
+        name: employeeName,
+        employeeId: employeeId
+      }
+    });
   } catch (error) {
     console.error('Delete employee error:', error);
     res.status(500).json({ message: 'Server error' });
