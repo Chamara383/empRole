@@ -163,7 +163,7 @@ const Dashboard = () => {
                 <p>OT Hours</p>
               </div>
               <div className="summary-card">
-                <h3>${stats.monthlySummary.totalPayableAmount.toFixed(2)}</h3>
+                <h3>LKR {stats.monthlySummary.totalPayableAmount.toFixed(2)}</h3>
                 <p>Total Payable</p>
               </div>
             </div>

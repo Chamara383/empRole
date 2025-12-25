@@ -251,7 +251,7 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
             <h3>Pay Rates</h3>
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="payRate">Regular Pay Rate ($/hour) *</label>
+                <label htmlFor="payRate">Regular Pay Rate (LKR/hour) *</label>
                 <input
                   type="number"
                   id="payRate"
@@ -267,7 +267,7 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="otRate">Overtime Rate ($/hour) *</label>
+                <label htmlFor="otRate">Overtime Rate (LKR/hour) *</label>
                 <input
                   type="number"
                   id="otRate"
@@ -283,7 +283,7 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="vacationPayRate">Vacation Pay Rate ($/hour) *</label>
+                <label htmlFor="vacationPayRate">Vacation Pay Rate (LKR/hour) *</label>
                 <input
                   type="number"
                   id="vacationPayRate"
