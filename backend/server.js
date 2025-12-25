@@ -22,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/employees', require('./routes/employees'));
 app.use('/api/timesheets', require('./routes/timesheets'));
+app.use('/api/expenses', require('./routes/expenses'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/password-reset', require('./routes/passwordReset'));
 app.use('/api/user-management', require('./routes/userManagement'));

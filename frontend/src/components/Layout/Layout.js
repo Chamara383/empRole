@@ -15,6 +15,7 @@ const Layout = ({ children }) => {
     { name: 'Employees', href: '/employees', icon: '👥', roles: ['admin', 'manager'] },
     { name: 'User Management', href: '/user-management', icon: '👤', roles: ['admin'] },
     { name: 'Timesheets', href: '/timesheets', icon: '⏰', roles: ['admin', 'manager', 'employee'] },
+    { name: 'Expenses', href: '/expenses', icon: '💰', roles: ['admin', 'manager', 'employee'] },
     { name: 'Reports', href: '/reports', icon: '📊', roles: ['admin', 'manager', 'employee'] },
   ];
 

@@ -7,6 +7,7 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Dashboard from './components/Dashboard/Dashboard';
 import EmployeeList from './components/Employees/EmployeeList';
 import TimesheetList from './components/Timesheets/TimesheetList';
+import ExpenseList from './components/Expenses/ExpenseList';
 import MonthlyReports from './components/Reports/MonthlyReports';
 import UserList from './components/Admin/UserList';
 import Layout from './components/Layout/Layout';
@@ -76,6 +77,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <Layout>
               <TimesheetList />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/expenses" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ExpenseList />
             </Layout>
           </ProtectedRoute>
         } 

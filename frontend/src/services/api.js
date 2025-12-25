@@ -75,6 +75,18 @@ export const timesheetsAPI = {
   deleteTimesheet: (id) => api.delete(`/timesheets/${id}`),
 };
 
+// Expenses API
+export const expensesAPI = {
+  getExpenses: (params) => api.get('/expenses', { params }),
+  getExpense: (id) => api.get(`/expenses/${id}`),
+  createExpense: (data) => api.post('/expenses', data),
+  updateExpense: (id, data) => api.put(`/expenses/${id}`, data),
+  deleteExpense: (id) => api.delete(`/expenses/${id}`),
+  submitExpense: (id) => api.put(`/expenses/${id}/submit`),
+  approveExpense: (id) => api.put(`/expenses/${id}/approve`),
+  rejectExpense: (id, rejectionReason) => api.put(`/expenses/${id}/reject`, { rejectionReason }),
+};
+
 // Reports API
 export const reportsAPI = {
   getMonthlySummary: (employeeId, year, month) => 
