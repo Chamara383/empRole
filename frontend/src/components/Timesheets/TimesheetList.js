@@ -76,12 +76,16 @@ const TimesheetList = () => {
   }, [loadTimesheets]);
 
   const loadEmployees = async () => {
-    try {
-      const response = await employeesAPI.getEmployees({ limit: 1000 });
-      setEmployees(response.data.employees);
-    } catch (err) {
-      console.error('Error loading employees:', err);
+    // Only load employees list for admin/manager (employees don't have access to this API)
+    if (user && (user.role === 'admin' || user.role === 'manager')) {
+      try {
+        const response = await employeesAPI.getEmployees({ limit: 1000 });
+        setEmployees(response.data.employees);
+      } catch (err) {
+        console.error('Error loading employees:', err);
+      }
     }
+    // For employees, the employees array will be empty, but the form will use timesheet data or user info
   };
 
 

@@ -5,8 +5,14 @@ const roleCheck = (...allowedRoles) => {
     }
 
     if (!allowedRoles.includes(req.user.role)) {
+      console.log('Role check failed:', {
+        userRole: req.user.role,
+        allowedRoles: allowedRoles,
+        userId: req.user._id,
+        username: req.user.username
+      });
       return res.status(403).json({ 
-        message: 'Access denied. Insufficient permissions.' 
+        message: `Access denied. Insufficient permissions. Required role: ${allowedRoles.join(' or ')}, Your role: ${req.user.role || 'none'}` 
       });
     }
 

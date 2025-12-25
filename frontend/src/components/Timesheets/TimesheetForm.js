@@ -172,7 +172,10 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
       onSuccess();
     } catch (error) {
       console.error('Error saving timesheet:', error);
-      setErrors({ submit: 'Failed to save timesheet. Please try again.' });
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          'Failed to save timesheet. Please try again.';
+      setErrors({ submit: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -216,7 +219,12 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
                   <input
                     type="text"
                     id="employeeId"
-                    value={employees.find(emp => emp._id === formData.employeeId)?.name || 'Loading...'}
+                    value={
+                      timesheet?.employeeId?.name || 
+                      employees.find(emp => emp._id === formData.employeeId)?.name || 
+                      user.name || 
+                      'Your Name'
+                    }
                     className="form-input"
                     disabled
                     readOnly
