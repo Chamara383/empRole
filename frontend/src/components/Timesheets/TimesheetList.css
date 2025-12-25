@@ -129,6 +129,24 @@
   color: #333;
 }
 
+.employee-name-link {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  transition: color 0.2s ease;
+}
+
+.employee-name-link:hover {
+  color: #764ba2;
+  text-decoration: none;
+}
+
 .timesheet-time {
   font-family: 'Courier New', monospace;
   color: #666;

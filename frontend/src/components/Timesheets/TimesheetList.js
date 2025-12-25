@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { timesheetsAPI, employeesAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import TimesheetForm from './TimesheetForm';
 import './TimesheetList.css';
 
 const TimesheetList = () => {
+  const { user } = useAuth();
   const [timesheets, setTimesheets] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +57,19 @@ const TimesheetList = () => {
     }
   }, [pagination.currentPage, filters]);
 
+  // Initialize filters based on user role
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'employee' && user.linkedEmployeeId) {
+        // For employees, automatically filter to their own timesheets
+        setFilters(prev => ({
+          ...prev,
+          employeeId: user.linkedEmployeeId,
+        }));
+      }
+    }
+  }, [user]);
+
   useEffect(() => {
     loadEmployees();
     loadTimesheets();
@@ -77,6 +92,17 @@ const TimesheetList = () => {
       [name]: value,
     }));
     setPagination(prev => ({ ...prev, currentPage: 1 }));
+  };
+
+  const handleEmployeeClick = (employeeId) => {
+    // Only allow clicking employee names for admin/manager roles
+    if (user && (user.role === 'admin' || user.role === 'manager')) {
+      setFilters(prev => ({
+        ...prev,
+        employeeId: employeeId,
+      }));
+      setPagination(prev => ({ ...prev, currentPage: 1 }));
+    }
   };
 
   const handleAddTimesheet = () => {
@@ -137,9 +163,21 @@ const TimesheetList = () => {
   };
 
   const getEmployeeName = (employeeId) => {
-    const employee = employees.find(emp => emp._id === employeeId);
+    if (!employeeId) return 'Unknown Employee';
+    // Handle both populated and non-populated employeeId
+    const id = typeof employeeId === 'object' ? employeeId._id : employeeId;
+    const employee = employees.find(emp => emp._id === id);
     return employee ? employee.name : 'Unknown Employee';
   };
+
+  const getEmployeeId = (employeeId) => {
+    if (!employeeId) return null;
+    // Handle both populated and non-populated employeeId
+    return typeof employeeId === 'object' ? employeeId._id : employeeId;
+  };
+
+  const isEmployeeRole = user && user.role === 'employee';
+  const isAdminOrManager = user && (user.role === 'admin' || user.role === 'manager');
 
   if (loading && timesheets.length === 0) {
     return (
@@ -166,23 +204,25 @@ const TimesheetList = () => {
 
       {/* Filters */}
       <div className="filters">
-        <div className="filter-group">
-          <label htmlFor="employeeId">Employee</label>
-          <select
-            id="employeeId"
-            name="employeeId"
-            value={filters.employeeId}
-            onChange={handleFilterChange}
-            className="filter-select"
-          >
-            <option value="">All Employees</option>
-            {employees.map(employee => (
-              <option key={employee._id} value={employee._id}>
-                {employee.name} ({employee.employeeId})
-              </option>
-            ))}
-          </select>
-        </div>
+        {isAdminOrManager && (
+          <div className="filter-group">
+            <label htmlFor="employeeId">Employee</label>
+            <select
+              id="employeeId"
+              name="employeeId"
+              value={filters.employeeId}
+              onChange={handleFilterChange}
+              className="filter-select"
+            >
+              <option value="">All Employees</option>
+              {employees.map(employee => (
+                <option key={employee._id} value={employee._id}>
+                  {employee.name} ({employee.employeeId})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className="filter-group">
           <label htmlFor="startDate">Start Date</label>
@@ -246,7 +286,18 @@ const TimesheetList = () => {
               <tr key={timesheet._id}>
                 <td className="timesheet-date">{formatDate(timesheet.date)}</td>
                 <td className="timesheet-employee">
-                  {getEmployeeName(timesheet.employeeId?._id)}
+                  {isAdminOrManager ? (
+                    <button
+                      type="button"
+                      className="employee-name-link"
+                      onClick={() => handleEmployeeClick(getEmployeeId(timesheet.employeeId))}
+                      title="Click to filter by this employee"
+                    >
+                      {getEmployeeName(timesheet.employeeId)}
+                    </button>
+                  ) : (
+                    <span>{getEmployeeName(timesheet.employeeId)}</span>
+                  )}
                 </td>
                 <td className="timesheet-time">
                   {formatTime(timesheet.startTime)} - {formatTime(timesheet.endTime)}
