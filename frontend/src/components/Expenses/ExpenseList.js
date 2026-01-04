@@ -364,8 +364,8 @@ const ExpenseList = () => {
           <tbody>
             {expenses.map((expense) => (
               <tr key={expense._id}>
-                <td className="expense-date">{formatDate(expense.date)}</td>
-                <td className="expense-employee">
+                <td className="expense-date" data-label="Date">{formatDate(expense.date)}</td>
+                <td className="expense-employee" data-label="Employee">
                   {isAdminOrManager ? (
                     <button
                       type="button"
@@ -379,19 +379,19 @@ const ExpenseList = () => {
                     <span>{getEmployeeName(expense.employeeId)}</span>
                   )}
                 </td>
-                <td className="expense-category">
+                <td className="expense-category" data-label="Category">
                   {getCategoryBadge(expense.category)}
                 </td>
-                <td className="expense-description">
+                <td className="expense-description" data-label="Description">
                   {expense.description}
                 </td>
-                <td className="expense-amount">
+                <td className="expense-amount" data-label="Amount">
                   {formatCurrency(expense.amount, expense.currency)}
                 </td>
-                <td className="expense-status">
+                <td className="expense-status" data-label="Status">
                   {getStatusBadge(expense.status)}
                 </td>
-                <td className="expense-actions">
+                <td className="expense-actions" data-label="Actions">
                   {expense.status === 'draft' && (
                     <>
                       <button
@@ -503,4 +503,3 @@ const ExpenseList = () => {
 };
 
 export default ExpenseList;
-

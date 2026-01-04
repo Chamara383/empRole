@@ -485,7 +485,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .user-list {
-    padding: 15px;
+    padding: 10px;
   }
   
   .user-header {
@@ -497,24 +497,55 @@
   .filters {
     flex-direction: column;
   }
-  
-  .user-table-container {
-    overflow-x: auto;
+
+  /* Responsive Table */
+  .user-table thead {
+    display: none;
   }
-  
-  .user-table {
-    min-width: 800px;
+
+  .user-table, 
+  .user-table tbody, 
+  .user-table tr, 
+  .user-table td {
+    display: block;
+    width: 100%;
   }
-  
+
+  .user-table tr {
+    margin-bottom: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .user-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    text-align: right;
+  }
+
+  .user-table td:last-child {
+    border-bottom: none;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .user-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #444;
+    text-align: left;
+    margin-right: 15px;
+  }
+
   .user-actions {
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .action-btn {
-    min-width: 28px;
-    height: 28px;
-    font-size: 0.8rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
   }
   
   .modal-content {

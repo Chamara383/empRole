@@ -99,6 +99,9 @@ const Layout = ({ children }) => {
                 className="user-info-btn"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
               >
+                <div className="user-avatar">
+                  <span>{user?.username?.charAt(0).toUpperCase()}</span>
+                </div>
                 <div className="user-info">
                   <span className="user-name">{user?.username}</span>
                   <span className="user-role">{user?.role}</span>

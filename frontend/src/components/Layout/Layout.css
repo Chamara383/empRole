@@ -142,8 +142,8 @@
   border: none;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
+  gap: 12px;
+  padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -151,6 +151,19 @@
 
 .user-info-btn:hover {
   background: #f8f9fa;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
 }
 
 .user-info {
@@ -303,7 +316,8 @@
 /* Small mobile screens */
 @media (max-width: 480px) {
   .sidebar {
-    width: 100%;
+    width: 85%; /* Better width for small screens */
+    max-width: 300px;
   }
   
   .topbar {
@@ -312,10 +326,21 @@
   
   .page-title {
     font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
   }
   
-  .logout-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
+  .user-dropdown {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-left: none;
+    border-right: none;
   }
 }

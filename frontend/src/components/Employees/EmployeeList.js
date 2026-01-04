@@ -263,15 +263,15 @@ const EmployeeList = () => {
           <tbody>
             {employees.map((employee) => (
               <tr key={employee._id}>
-                <td className="employee-id">{employee.employeeId}</td>
-                <td className="employee-name">{employee.name}</td>
-                <td className="employee-position">{employee.position}</td>
-                <td className="employee-pay">{formatCurrency(employee.payRate)}</td>
-                <td className="employee-status">
+                <td className="employee-id" data-label="Employee ID">{employee.employeeId}</td>
+                <td className="employee-name" data-label="Name">{employee.name}</td>
+                <td className="employee-position" data-label="Position">{employee.position}</td>
+                <td className="employee-pay" data-label="Pay Rate">{formatCurrency(employee.payRate)}</td>
+                <td className="employee-status" data-label="Status">
                   {getStatusBadge(employee.status)}
                 </td>
-                <td className="employee-date">{formatDate(employee.dateOfEmployment)}</td>
-                <td className="employee-actions">
+                <td className="employee-date" data-label="Date Hired">{formatDate(employee.dateOfEmployment)}</td>
+                <td className="employee-actions" data-label="Actions">
                   <button
                     className="action-btn edit"
                     onClick={() => handleEditEmployee(employee)}

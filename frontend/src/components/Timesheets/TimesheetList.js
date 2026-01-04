@@ -288,8 +288,8 @@ const TimesheetList = () => {
           <tbody>
             {timesheets.map((timesheet) => (
               <tr key={timesheet._id}>
-                <td className="timesheet-date">{formatDate(timesheet.date)}</td>
-                <td className="timesheet-employee">
+                <td className="timesheet-date" data-label="Date">{formatDate(timesheet.date)}</td>
+                <td className="timesheet-employee" data-label="Employee">
                   {isAdminOrManager ? (
                     <button
                       type="button"
@@ -303,16 +303,16 @@ const TimesheetList = () => {
                     <span>{getEmployeeName(timesheet.employeeId)}</span>
                   )}
                 </td>
-                <td className="timesheet-time">
+                <td className="timesheet-time" data-label="Time Range">
                   {formatTime(timesheet.startTime)} - {formatTime(timesheet.endTime)}
                 </td>
-                <td className="timesheet-hours">
+                <td className="timesheet-hours" data-label="Total Hours">
                   {timesheet.totalHoursWorked.toFixed(1)}h
                 </td>
-                <td className="timesheet-ot">
+                <td className="timesheet-ot" data-label="OT Hours">
                   {timesheet.otHours > 0 ? `+${timesheet.otHours.toFixed(1)}h` : '-'}
                 </td>
-                <td className="timesheet-type">
+                <td className="timesheet-type" data-label="Type">
                   <div className="type-badges">
                     {timesheet.isVacationWork && (
                       <span className="type-badge vacation">Vacation</span>
@@ -325,10 +325,10 @@ const TimesheetList = () => {
                     )}
                   </div>
                 </td>
-                <td className="timesheet-status">
+                <td className="timesheet-status" data-label="Status">
                   {getStatusBadge(timesheet.status)}
                 </td>
-                <td className="timesheet-actions">
+                <td className="timesheet-actions" data-label="Actions">
                   <button
                     className="action-btn edit"
                     onClick={() => handleEditTimesheet(timesheet)}

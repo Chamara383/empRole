@@ -296,28 +296,28 @@ const MonthlyReports = () => {
           <tbody>
             {reports.map((report) => (
               <tr key={report._id}>
-                <td className="report-employee">
+                <td className="report-employee" data-label="Employee">
                   {getEmployeeName(report.employeeId?._id)}
                 </td>
-                <td className="report-hours">
+                <td className="report-hours" data-label="Regular Hours">
                   {report.totalRegularHours.toFixed(1)}h
                 </td>
-                <td className="report-ot">
+                <td className="report-ot" data-label="OT Hours">
                   {report.totalOTHours.toFixed(1)}h
                 </td>
-                <td className="report-vacation">
+                <td className="report-vacation" data-label="Vacation Hours">
                   {report.totalVacationHours.toFixed(1)}h
                 </td>
-                <td className="report-holiday">
+                <td className="report-holiday" data-label="Holiday Hours">
                   {report.totalHolidayHours.toFixed(1)}h
                 </td>
-                <td className="report-payable">
+                <td className="report-payable" data-label="Total Payable">
                   {formatCurrency(report.totalPayableAmount)}
                 </td>
-                <td className="report-status">
+                <td className="report-status" data-label="Status">
                   {getStatusBadge(report.status)}
                 </td>
-                <td className="report-actions">
+                <td className="report-actions" data-label="Actions">
                   {report.status === 'draft' && (
                     <button
                       className="action-btn finalize"
