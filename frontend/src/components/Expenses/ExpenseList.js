@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { timesheetsAPI, employeesAPI } from '../../services/api';
+import { expensesAPI, employeesAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import TimesheetForm from './TimesheetForm';
-import './TimesheetList.css';
+import ExpenseForm from './ExpenseForm';
+import './ExpenseList.css';
 
-const TimesheetList = () => {
+const ExpenseList = () => {
   const { user } = useAuth();
-  const [timesheets, setTimesheets] = useState([]);
+  const [expenses, setExpenses] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [editingTimesheet, setEditingTimesheet] = useState(null);
+  const [editingExpense, setEditingExpense] = useState(null);
   const [filters, setFilters] = useState({
     employeeId: '',
     startDate: '',
     endDate: '',
     status: '',
+    category: '',
   });
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -24,7 +25,7 @@ const TimesheetList = () => {
     total: 0,
   });
 
-  const loadTimesheets = React.useCallback(async () => {
+  const loadExpenses = React.useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -42,16 +43,20 @@ const TimesheetList = () => {
         }
       });
 
-      const response = await timesheetsAPI.getTimesheets(params);
-      setTimesheets(response.data.timesheets);
+      const response = await expensesAPI.getExpenses(params);
+      setExpenses(response.data.expenses);
       setPagination(prev => ({
         ...prev,
         totalPages: response.data.totalPages,
         total: response.data.total,
       }));
     } catch (err) {
-      setError('Failed to load timesheets');
-      console.error('Error loading timesheets:', err);
+      const errorMessage = err.response?.data?.message || 
+                          err.response?.status === 404 
+                            ? 'Expenses API not found. Please restart the backend server.' 
+                            : 'Failed to load expenses';
+      setError(errorMessage);
+      console.error('Error loading expenses:', err);
     } finally {
       setLoading(false);
     }
@@ -61,7 +66,7 @@ const TimesheetList = () => {
   useEffect(() => {
     if (user) {
       if (user.role === 'employee' && user.linkedEmployeeId) {
-        // For employees, automatically filter to their own timesheets
+        // For employees, automatically filter to their own expenses
         setFilters(prev => ({
           ...prev,
           employeeId: user.linkedEmployeeId,
@@ -72,8 +77,8 @@ const TimesheetList = () => {
 
   useEffect(() => {
     loadEmployees();
-    loadTimesheets();
-  }, [loadTimesheets]);
+    loadExpenses();
+  }, [loadExpenses]);
 
   const loadEmployees = async () => {
     // Only load employees list for admin/manager (employees don't have access to this API)
@@ -85,9 +90,7 @@ const TimesheetList = () => {
         console.error('Error loading employees:', err);
       }
     }
-    // For employees, the employees array will be empty, but the form will use timesheet data or user info
   };
-
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -109,38 +112,75 @@ const TimesheetList = () => {
     }
   };
 
-  const handleAddTimesheet = () => {
-    setEditingTimesheet(null);
+  const handleAddExpense = () => {
+    setEditingExpense(null);
     setShowForm(true);
   };
 
-  const handleEditTimesheet = (timesheet) => {
-    setEditingTimesheet(timesheet);
+  const handleEditExpense = (expense) => {
+    setEditingExpense(expense);
     setShowForm(true);
   };
 
   const handleFormClose = () => {
     setShowForm(false);
-    setEditingTimesheet(null);
+    setEditingExpense(null);
   };
 
   const handleFormSuccess = () => {
     setShowForm(false);
-    setEditingTimesheet(null);
-    loadTimesheets();
+    setEditingExpense(null);
+    loadExpenses();
   };
 
-  const handleDeleteTimesheet = async (timesheetId) => {
-    if (!window.confirm('Are you sure you want to delete this timesheet entry?')) {
+  const handleDeleteExpense = async (expenseId) => {
+    if (!window.confirm('Are you sure you want to delete this expense entry?')) {
       return;
     }
 
     try {
-      await timesheetsAPI.deleteTimesheet(timesheetId);
-      loadTimesheets();
+      await expensesAPI.deleteExpense(expenseId);
+      loadExpenses();
     } catch (err) {
-      setError('Failed to delete timesheet');
-      console.error('Error deleting timesheet:', err);
+      setError('Failed to delete expense');
+      console.error('Error deleting expense:', err);
+    }
+  };
+
+  const handleSubmitExpense = async (expenseId) => {
+    try {
+      await expensesAPI.submitExpense(expenseId);
+      loadExpenses();
+    } catch (err) {
+      setError('Failed to submit expense');
+      console.error('Error submitting expense:', err);
+    }
+  };
+
+  const handleApproveExpense = async (expenseId) => {
+    if (!window.confirm('Are you sure you want to approve this expense?')) {
+      return;
+    }
+
+    try {
+      await expensesAPI.approveExpense(expenseId);
+      loadExpenses();
+    } catch (err) {
+      setError('Failed to approve expense');
+      console.error('Error approving expense:', err);
+    }
+  };
+
+  const handleRejectExpense = async (expenseId) => {
+    const rejectionReason = window.prompt('Please provide a reason for rejection:');
+    if (rejectionReason === null) return; // User cancelled
+
+    try {
+      await expensesAPI.rejectExpense(expenseId, rejectionReason);
+      loadExpenses();
+    } catch (err) {
+      setError('Failed to reject expense');
+      console.error('Error rejecting expense:', err);
     }
   };
 
@@ -148,8 +188,11 @@ const TimesheetList = () => {
     return new Date(dateString).toLocaleDateString();
   };
 
-  const formatTime = (timeString) => {
-    return timeString;
+  const formatCurrency = (amount, currency = 'LKR') => {
+    return new Intl.NumberFormat('en-LK', {
+      style: 'currency',
+      currency: currency,
+    }).format(amount);
   };
 
   const getStatusBadge = (status) => {
@@ -158,10 +201,26 @@ const TimesheetList = () => {
       submitted: 'status-submitted',
       approved: 'status-approved',
       rejected: 'status-rejected',
+      reimbursed: 'status-reimbursed',
     };
     return (
       <span className={`status-badge ${statusClasses[status] || 'status-draft'}`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
+      </span>
+    );
+  };
+
+  const getCategoryBadge = (category) => {
+    const categoryClasses = {
+      transport: 'category-transport',
+      meals: 'category-meals',
+      accommodation: 'category-accommodation',
+      supplies: 'category-supplies',
+      other: 'category-other',
+    };
+    return (
+      <span className={`category-badge ${categoryClasses[category] || 'category-other'}`}>
+        {category.charAt(0).toUpperCase() + category.slice(1)}
       </span>
     );
   };
@@ -180,23 +239,22 @@ const TimesheetList = () => {
     return typeof employeeId === 'object' ? employeeId._id : employeeId;
   };
 
-  const isEmployeeRole = user && user.role === 'employee';
   const isAdminOrManager = user && (user.role === 'admin' || user.role === 'manager');
 
-  if (loading && timesheets.length === 0) {
+  if (loading && expenses.length === 0) {
     return (
-      <div className="timesheet-list">
-        <div className="loading">Loading timesheets...</div>
+      <div className="expense-list">
+        <div className="loading">Loading expenses...</div>
       </div>
     );
   }
 
   return (
-    <div className="timesheet-list">
-      <div className="timesheet-header">
-        <h1>Timesheet Management</h1>
-        <button className="add-button" onClick={handleAddTimesheet}>
-          + Add Timesheet Entry
+    <div className="expense-list">
+      <div className="expense-header">
+        <h1>Daily Expenses Management</h1>
+        <button className="add-button" onClick={handleAddExpense}>
+          + Add Expense Entry
         </button>
       </div>
 
@@ -253,6 +311,24 @@ const TimesheetList = () => {
         </div>
 
         <div className="filter-group">
+          <label htmlFor="category">Category</label>
+          <select
+            id="category"
+            name="category"
+            value={filters.category}
+            onChange={handleFilterChange}
+            className="filter-select"
+          >
+            <option value="">All Categories</option>
+            <option value="transport">Transport</option>
+            <option value="meals">Meals</option>
+            <option value="accommodation">Accommodation</option>
+            <option value="supplies">Supplies</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div className="filter-group">
           <label htmlFor="status">Status</label>
           <select
             id="status"
@@ -266,92 +342,117 @@ const TimesheetList = () => {
             <option value="submitted">Submitted</option>
             <option value="approved">Approved</option>
             <option value="rejected">Rejected</option>
+            <option value="reimbursed">Reimbursed</option>
           </select>
         </div>
       </div>
 
-      {/* Timesheet Table */}
-      <div className="timesheet-table-container">
-        <table className="timesheet-table">
+      {/* Expense Table */}
+      <div className="expense-table-container">
+        <table className="expense-table">
           <thead>
             <tr>
               <th>Date</th>
               <th>Employee</th>
-              <th>Time Range</th>
-              <th>Total Hours</th>
-              <th>OT Hours</th>
-              <th>Type</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Amount</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {timesheets.map((timesheet) => (
-              <tr key={timesheet._id}>
-                <td className="timesheet-date" data-label="Date">{formatDate(timesheet.date)}</td>
-                <td className="timesheet-employee" data-label="Employee">
+            {expenses.map((expense) => (
+              <tr key={expense._id}>
+                <td className="expense-date" data-label="Date">{formatDate(expense.date)}</td>
+                <td className="expense-employee" data-label="Employee">
                   {isAdminOrManager ? (
                     <button
                       type="button"
                       className="employee-name-link"
-                      onClick={() => handleEmployeeClick(getEmployeeId(timesheet.employeeId))}
+                      onClick={() => handleEmployeeClick(getEmployeeId(expense.employeeId))}
                       title="Click to filter by this employee"
                     >
-                      {getEmployeeName(timesheet.employeeId)}
+                      {getEmployeeName(expense.employeeId)}
                     </button>
                   ) : (
-                    <span>{getEmployeeName(timesheet.employeeId)}</span>
+                    <span>{getEmployeeName(expense.employeeId)}</span>
                   )}
                 </td>
-                <td className="timesheet-time" data-label="Time Range">
-                  {formatTime(timesheet.startTime)} - {formatTime(timesheet.endTime)}
+                <td className="expense-category" data-label="Category">
+                  {getCategoryBadge(expense.category)}
                 </td>
-                <td className="timesheet-hours" data-label="Total Hours">
-                  {timesheet.totalHoursWorked.toFixed(1)}h
+                <td className="expense-description" data-label="Description">
+                  {expense.description}
                 </td>
-                <td className="timesheet-ot" data-label="OT Hours">
-                  {timesheet.otHours > 0 ? `+${timesheet.otHours.toFixed(1)}h` : '-'}
+                <td className="expense-amount" data-label="Amount">
+                  {formatCurrency(expense.amount, expense.currency)}
                 </td>
-                <td className="timesheet-type" data-label="Type">
-                  <div className="type-badges">
-                    {timesheet.isVacationWork && (
-                      <span className="type-badge vacation">Vacation</span>
-                    )}
-                    {timesheet.isHolidayWork && (
-                      <span className="type-badge holiday">Holiday</span>
-                    )}
-                    {!timesheet.isVacationWork && !timesheet.isHolidayWork && (
-                      <span className="type-badge regular">Regular</span>
-                    )}
-                  </div>
+                <td className="expense-status" data-label="Status">
+                  {getStatusBadge(expense.status)}
                 </td>
-                <td className="timesheet-status" data-label="Status">
-                  {getStatusBadge(timesheet.status)}
-                </td>
-                <td className="timesheet-actions" data-label="Actions">
-                  <button
-                    className="action-btn edit"
-                    onClick={() => handleEditTimesheet(timesheet)}
-                    title="Edit Timesheet"
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    className="action-btn delete"
-                    onClick={() => handleDeleteTimesheet(timesheet._id)}
-                    title="Delete Timesheet"
-                  >
-                    🗑️
-                  </button>
+                <td className="expense-actions" data-label="Actions">
+                  {expense.status === 'draft' && (
+                    <>
+                      <button
+                        className="action-btn edit"
+                        onClick={() => handleEditExpense(expense)}
+                        title="Edit Expense"
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        className="action-btn submit"
+                        onClick={() => handleSubmitExpense(expense._id)}
+                        title="Submit for Approval"
+                      >
+                        📤
+                      </button>
+                      <button
+                        className="action-btn delete"
+                        onClick={() => handleDeleteExpense(expense._id)}
+                        title="Delete Expense"
+                      >
+                        🗑️
+                      </button>
+                    </>
+                  )}
+                  {expense.status === 'submitted' && isAdminOrManager && (
+                    <>
+                      <button
+                        className="action-btn approve"
+                        onClick={() => handleApproveExpense(expense._id)}
+                        title="Approve Expense"
+                      >
+                        ✓
+                      </button>
+                      <button
+                        className="action-btn reject"
+                        onClick={() => handleRejectExpense(expense._id)}
+                        title="Reject Expense"
+                      >
+                        ✗
+                      </button>
+                    </>
+                  )}
+                  {expense.status === 'rejected' && (
+                    <button
+                      className="action-btn edit"
+                      onClick={() => handleEditExpense(expense)}
+                      title="Edit Expense"
+                    >
+                      ✏️
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        {timesheets.length === 0 && !loading && (
+        {expenses.length === 0 && !loading && (
           <div className="no-data">
-            <p>No timesheets found</p>
+            <p>No expenses found</p>
           </div>
         )}
       </div>
@@ -388,10 +489,10 @@ const TimesheetList = () => {
         </div>
       )}
 
-      {/* Timesheet Form Modal */}
+      {/* Expense Form Modal */}
       {showForm && (
-        <TimesheetForm
-          timesheet={editingTimesheet}
+        <ExpenseForm
+          expense={editingExpense}
           employees={employees}
           onClose={handleFormClose}
           onSuccess={handleFormSuccess}
@@ -401,4 +502,4 @@ const TimesheetList = () => {
   );
 };
 
-export default TimesheetList;
+export default ExpenseList;

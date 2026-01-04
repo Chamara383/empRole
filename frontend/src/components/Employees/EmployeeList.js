@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { employeesAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import EmployeeForm from './EmployeeForm';
 import './EmployeeList.css';
 
 const EmployeeList = () => {
+  const { user, isAuthenticated, token } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,16 +22,30 @@ const EmployeeList = () => {
 
   const loadEmployees = React.useCallback(async () => {
     try {
+      setLoading(true);
       const response = await employeesAPI.getEmployees({ limit: 1000 });
       setEmployees(response.data.employees);
+      setPagination(prev => ({
+        ...prev,
+        totalPages: response.data.totalPages,
+        total: response.data.total,
+      }));
     } catch (err) {
+      setError('Failed to load employees');
       console.error('Error loading employees:', err);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    loadEmployees();
-  }, [loadEmployees]);
+    if (isAuthenticated) {
+      loadEmployees();
+    } else {
+      setLoading(false);
+      setError('Please log in to view employees');
+    }
+  }, [loadEmployees, isAuthenticated]);
 
   const loadEmployeesData = async () => {
     try {
@@ -88,16 +105,65 @@ const EmployeeList = () => {
     loadEmployeesData();
   };
 
-  const handleDeleteEmployee = async (employeeId) => {
-    if (!window.confirm('Are you sure you want to deactivate this employee?')) {
+  const clearMessages = () => {
+    setError('');
+    setMessage('');
+  };
+
+  // Clear messages after 5 seconds
+  useEffect(() => {
+    if (message || error) {
+      const timer = setTimeout(clearMessages, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message, error]);
+
+  const handleDeactivateEmployee = async (employee) => {
+    if (!window.confirm(`Are you sure you want to deactivate ${employee.name}? This will make them inactive but keep their data.`)) {
       return;
     }
 
     try {
-      await employeesAPI.deleteEmployee(employeeId);
+      await employeesAPI.deactivateEmployee(employee._id);
+      setMessage(`${employee.name} has been deactivated successfully`);
       loadEmployeesData();
     } catch (err) {
-      setError('Failed to deactivate employee');
+      setError(err.response?.data?.message || 'Failed to deactivate employee');
+      console.error('Error deactivating employee:', err);
+    }
+  };
+
+  const handleActivateEmployee = async (employee) => {
+    if (!window.confirm(`Are you sure you want to activate ${employee.name}?`)) {
+      return;
+    }
+
+    try {
+      await employeesAPI.activateEmployee(employee._id);
+      setMessage(`${employee.name} has been activated successfully`);
+      loadEmployeesData();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to activate employee');
+      console.error('Error activating employee:', err);
+    }
+  };
+
+  const handleDeleteEmployee = async (employee) => {
+    if (!window.confirm(`⚠️ WARNING: Are you sure you want to PERMANENTLY DELETE ${employee.name} (${employee.employeeId})?\n\nThis action cannot be undone and will remove all employee data permanently.`)) {
+      return;
+    }
+
+    // Double confirmation for permanent deletion
+    if (!window.confirm(`FINAL CONFIRMATION: This will permanently delete ${employee.name} and all associated data. This action cannot be undone.\n\nType "DELETE" to confirm.`)) {
+      return;
+    }
+
+    try {
+      await employeesAPI.deleteEmployee(employee._id);
+      setMessage(`${employee.name} has been permanently deleted`);
+      loadEmployeesData();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to delete employee');
       console.error('Error deleting employee:', err);
     }
   };
@@ -107,9 +173,9 @@ const EmployeeList = () => {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-LK', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'LKR',
     }).format(amount);
   };
 
@@ -146,6 +212,12 @@ const EmployeeList = () => {
       {error && (
         <div className="error-message">
           {error}
+        </div>
+      )}
+
+      {message && (
+        <div className="success-message">
+          {message}
         </div>
       )}
 
@@ -191,15 +263,15 @@ const EmployeeList = () => {
           <tbody>
             {employees.map((employee) => (
               <tr key={employee._id}>
-                <td className="employee-id">{employee.employeeId}</td>
-                <td className="employee-name">{employee.name}</td>
-                <td className="employee-position">{employee.position}</td>
-                <td className="employee-pay">{formatCurrency(employee.payRate)}</td>
-                <td className="employee-status">
+                <td className="employee-id" data-label="Employee ID">{employee.employeeId}</td>
+                <td className="employee-name" data-label="Name">{employee.name}</td>
+                <td className="employee-position" data-label="Position">{employee.position}</td>
+                <td className="employee-pay" data-label="Pay Rate">{formatCurrency(employee.payRate)}</td>
+                <td className="employee-status" data-label="Status">
                   {getStatusBadge(employee.status)}
                 </td>
-                <td className="employee-date">{formatDate(employee.dateOfEmployment)}</td>
-                <td className="employee-actions">
+                <td className="employee-date" data-label="Date Hired">{formatDate(employee.dateOfEmployment)}</td>
+                <td className="employee-actions" data-label="Actions">
                   <button
                     className="action-btn edit"
                     onClick={() => handleEditEmployee(employee)}
@@ -207,13 +279,36 @@ const EmployeeList = () => {
                   >
                     ✏️
                   </button>
-                  <button
-                    className="action-btn delete"
-                    onClick={() => handleDeleteEmployee(employee._id)}
-                    title="Deactivate Employee"
-                  >
-                    🗑️
-                  </button>
+                  {(user.role === 'admin' || user.role === 'manager') && (
+                    <>
+                      {employee.status === 'active' ? (
+                        <button
+                          className="action-btn deactivate"
+                          onClick={() => handleDeactivateEmployee(employee)}
+                          title="Deactivate Employee"
+                        >
+                          ⏸️
+                        </button>
+                      ) : (
+                        <button
+                          className="action-btn activate"
+                          onClick={() => handleActivateEmployee(employee)}
+                          title="Activate Employee"
+                        >
+                          ▶️
+                        </button>
+                      )}
+                    </>
+                  )}
+                  {user.role === 'admin' && (
+                    <button
+                      className="action-btn delete"
+                      onClick={() => handleDeleteEmployee(employee)}
+                      title="Permanently Delete Employee"
+                    >
+                      🗑️
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -2,16 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './components/Auth/Login';
-import ForgotPassword from './components/Auth/ForgotPassword';
-import ResetPassword from './components/Auth/ResetPassword';
-import ChangePassword from './components/Auth/ChangePassword';
-import EmployeePasswordReset from './components/Auth/EmployeePasswordReset';
 import UserProfile from './components/Profile/UserProfile';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Dashboard from './components/Dashboard/Dashboard';
 import EmployeeList from './components/Employees/EmployeeList';
 import TimesheetList from './components/Timesheets/TimesheetList';
+import ExpenseList from './components/Expenses/ExpenseList';
 import MonthlyReports from './components/Reports/MonthlyReports';
+import UserList from './components/Admin/UserList';
 import Layout from './components/Layout/Layout';
 import './App.css';
 
@@ -32,26 +30,6 @@ const AppRoutes = () => {
       <Route 
         path="/login" 
         element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} 
-      />
-      <Route 
-        path="/forgot-password" 
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <ForgotPassword />} 
-      />
-      <Route 
-        path="/reset-password/:token" 
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <ResetPassword />} 
-      />
-      <Route 
-        path="/employee-password-reset" 
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <EmployeePasswordReset />} 
-      />
-      <Route 
-        path="/change-password" 
-        element={
-          <ProtectedRoute>
-            <ChangePassword />
-          </ProtectedRoute>
-        } 
       />
       <Route 
         path="/profile" 
@@ -86,7 +64,7 @@ const AppRoutes = () => {
       <Route 
         path="/employees" 
         element={
-          <ProtectedRoute requiredRole="admin">
+          <ProtectedRoute requiredRole={["admin", "manager"]}>
             <Layout>
               <EmployeeList />
             </Layout>
@@ -104,11 +82,31 @@ const AppRoutes = () => {
         } 
       />
       <Route 
+        path="/expenses" 
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <ExpenseList />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
         path="/reports" 
         element={
           <ProtectedRoute>
             <Layout>
               <MonthlyReports />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/user-management" 
+        element={
+          <ProtectedRoute requiredRole="admin">
+            <Layout>
+              <UserList />
             </Layout>
           </ProtectedRoute>
         } 

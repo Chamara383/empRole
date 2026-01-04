@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { timesheetsAPI } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import './TimesheetForm.css';
 
 const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     date: '',
     employeeId: '',
@@ -35,9 +37,17 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
     } else {
       // Set default date to today
       const today = new Date().toISOString().split('T')[0];
-      setFormData(prev => ({ ...prev, date: today }));
+      // For employees, auto-set their employeeId
+      const defaultEmployeeId = (user && user.role === 'employee' && user.linkedEmployeeId) 
+        ? user.linkedEmployeeId 
+        : '';
+      setFormData(prev => ({ 
+        ...prev, 
+        date: today,
+        employeeId: defaultEmployeeId,
+      }));
     }
-  }, [timesheet]);
+  }, [timesheet, user]);
 
   const calculateHours = React.useCallback(() => {
     if (!formData.startTime || !formData.endTime) {
@@ -162,7 +172,10 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
       onSuccess();
     } catch (error) {
       console.error('Error saving timesheet:', error);
-      setErrors({ submit: 'Failed to save timesheet. Please try again.' });
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          'Failed to save timesheet. Please try again.';
+      setErrors({ submit: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -202,20 +215,36 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
 
               <div className="form-group">
                 <label htmlFor="employeeId">Employee *</label>
-                <select
-                  id="employeeId"
-                  name="employeeId"
-                  value={formData.employeeId}
-                  onChange={handleChange}
-                  className={errors.employeeId ? 'error' : ''}
-                >
-                  <option value="">Select Employee</option>
-                  {employees.map(employee => (
-                    <option key={employee._id} value={employee._id}>
-                      {employee.name} ({employee.employeeId})
-                    </option>
-                  ))}
-                </select>
+                {user && user.role === 'employee' ? (
+                  <input
+                    type="text"
+                    id="employeeId"
+                    value={
+                      timesheet?.employeeId?.name || 
+                      employees.find(emp => emp._id === formData.employeeId)?.name || 
+                      user.name || 
+                      'Your Name'
+                    }
+                    className="form-input"
+                    disabled
+                    readOnly
+                  />
+                ) : (
+                  <select
+                    id="employeeId"
+                    name="employeeId"
+                    value={formData.employeeId}
+                    onChange={handleChange}
+                    className={errors.employeeId ? 'error' : ''}
+                  >
+                    <option value="">Select Employee</option>
+                    {employees.map(employee => (
+                      <option key={employee._id} value={employee._id}>
+                        {employee.name} ({employee.employeeId})
+                      </option>
+                    ))}
+                  </select>
+                )}
                 {errors.employeeId && <span className="field-error">{errors.employeeId}</span>}
               </div>
             </div>

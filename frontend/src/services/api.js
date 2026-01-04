@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 
 // Create axios instance
 const api = axios.create({
@@ -44,30 +44,14 @@ export const authAPI = {
   getMe: () => api.get('/auth/me'),
 };
 
-// Password Reset API
+// Password Reset API (Admin only - individual password reset removed)
 export const passwordResetAPI = {
   requestReset: (email) => api.post('/password-reset/request', { email }),
   verifyToken: (token) => api.post('/password-reset/verify', { token }),
   resetPassword: (token, newPassword) => 
     api.post('/password-reset/reset', { token, newPassword }),
-  changePassword: (currentPassword, newPassword) => 
-    api.post('/password-reset/change', { currentPassword, newPassword }),
 };
 
-// Employee Password Reset API
-export const employeePasswordResetAPI = {
-  verifyEmployee: (employeeId, dateOfBirth) => 
-    api.post('/employee-password-reset/verify', { 
-      employeeId, 
-      dateOfBirth
-    }),
-  resetEmployeePassword: (employeeId, dateOfBirth, newPassword) => 
-    api.post('/employee-password-reset/reset', { 
-      employeeId, 
-      dateOfBirth, 
-      newPassword 
-    }),
-};
 
 // Employees API
 export const employeesAPI = {
@@ -75,6 +59,8 @@ export const employeesAPI = {
   getEmployee: (id) => api.get(`/employees/${id}`),
   createEmployee: (data) => api.post('/employees', data),
   updateEmployee: (id, data) => api.put(`/employees/${id}`, data),
+  deactivateEmployee: (id) => api.put(`/employees/${id}/deactivate`),
+  activateEmployee: (id) => api.put(`/employees/${id}/activate`),
   deleteEmployee: (id) => api.delete(`/employees/${id}`),
 };
 
@@ -89,6 +75,18 @@ export const timesheetsAPI = {
   deleteTimesheet: (id) => api.delete(`/timesheets/${id}`),
 };
 
+// Expenses API
+export const expensesAPI = {
+  getExpenses: (params) => api.get('/expenses', { params }),
+  getExpense: (id) => api.get(`/expenses/${id}`),
+  createExpense: (data) => api.post('/expenses', data),
+  updateExpense: (id, data) => api.put(`/expenses/${id}`, data),
+  deleteExpense: (id) => api.delete(`/expenses/${id}`),
+  submitExpense: (id) => api.put(`/expenses/${id}/submit`),
+  approveExpense: (id) => api.put(`/expenses/${id}/approve`),
+  rejectExpense: (id, rejectionReason) => api.put(`/expenses/${id}/reject`, { rejectionReason }),
+};
+
 // Reports API
 export const reportsAPI = {
   getMonthlySummary: (employeeId, year, month) => 
@@ -99,6 +97,17 @@ export const reportsAPI = {
   finalizeSummary: (id) => api.put(`/reports/monthly/${id}/finalize`),
   exportReport: (year, month) => 
     api.get(`/reports/export/${year}/${month}`, { responseType: 'blob' }),
+};
+
+
+// User Management API
+export const userManagementAPI = {
+  getUsers: (params) => api.get('/user-management/users', { params }),
+  getUser: (id) => api.get(`/user-management/users/${id}`),
+  createUser: (data) => api.post('/user-management/users', data),
+  updateUser: (id, data) => api.put(`/user-management/users/${id}`, data),
+  deleteUser: (id) => api.delete(`/user-management/users/${id}`),
+  toggleUserStatus: (id) => api.put(`/user-management/users/${id}/toggle-status`),
 };
 
 export default api;

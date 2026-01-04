@@ -1,6 +1,7 @@
 const express = require('express');
 const { body, validationResult, query } = require('express-validator');
 const Employee = require('../models/Employee');
+const User = require('../models/User');
 const auth = require('../middleware/auth');
 const { adminOnly, adminOrManager } = require('../middleware/roleCheck');
 
@@ -68,17 +69,19 @@ router.get('/:id', [auth, adminOrManager], async (req, res) => {
 
 // @route   POST /api/employees
 // @desc    Create new employee
-// @access  Private (Admin only)
+// @access  Private (Admin/Manager)
 router.post('/', [
   auth,
-  adminOnly,
+  adminOrManager,
   body('employeeId').notEmpty().withMessage('Employee ID is required'),
   body('name').notEmpty().withMessage('Name is required'),
   body('position').notEmpty().withMessage('Position is required'),
   body('payRate').isNumeric().withMessage('Pay rate must be a number'),
   body('otRate').isNumeric().withMessage('OT rate must be a number'),
   body('vacationPayRate').isNumeric().withMessage('Vacation pay rate must be a number'),
-  body('breakTimeConfig.duration').optional().isNumeric().withMessage('Break duration must be a number')
+  body('breakTimeConfig.duration').optional().isNumeric().withMessage('Break duration must be a number'),
+  body('email').isEmail().withMessage('Valid email is required for login'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -96,7 +99,9 @@ router.post('/', [
       vacationPayRate,
       breakTimeConfig,
       personalInfo,
-      passwordResetInfo
+      passwordResetInfo,
+      email,
+      password
     } = req.body;
 
     // Check if employee ID already exists
@@ -120,10 +125,61 @@ router.post('/', [
 
     await employee.save();
 
-    res.status(201).json({
-      message: 'Employee created successfully',
-      employee
-    });
+    // Automatically create user account for the employee
+    try {
+      // Use email as username (normalized to lowercase)
+      const username = email.toLowerCase().trim();
+      
+      // Check if username/email already exists
+      const existingUser = await User.findOne({
+        $or: [{ username }, { email: username }]
+      });
+      
+      if (existingUser) {
+        return res.status(400).json({ 
+          message: 'A user with this email already exists. Please use a different email.' 
+        });
+      }
+
+      // Create user account with email as username
+      const user = new User({
+        username: username, // Email is used as username
+        email: username,    // Same as username
+        password: password, // Password provided by manager (will be hashed by pre-save hook)
+        role: 'employee',
+        linkedEmployeeId: employee._id,
+        isActive: true
+      });
+
+      await user.save();
+
+      // Update employee's personalInfo with the email if not already set
+      if (!employee.personalInfo?.email) {
+        employee.personalInfo = employee.personalInfo || {};
+        employee.personalInfo.email = username;
+        await employee.save();
+      }
+
+      res.status(201).json({
+        message: 'Employee created successfully with login credentials',
+        employee,
+        userCredentials: {
+          username: user.username,
+          email: user.email,
+          message: 'Login credentials created. The employee can log in using their email and the password you set.'
+        }
+      });
+    } catch (userError) {
+      // If user creation fails, still return success for employee creation
+      // but log the error
+      console.error('Error creating user account for employee:', userError);
+      res.status(201).json({
+        message: 'Employee created successfully, but user account creation failed',
+        employee,
+        warning: 'User account could not be created. Please create it manually.',
+        error: userError.message
+      });
+    }
   } catch (error) {
     console.error('Create employee error:', error);
     res.status(500).json({ message: 'Server error' });
@@ -178,8 +234,76 @@ router.put('/:id', [
   }
 });
 
+// @route   PUT /api/employees/:id/deactivate
+// @desc    Deactivate employee (soft delete)
+// @access  Private (Admin/Manager)
+router.put('/:id/deactivate', [auth, adminOrManager], async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+    
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    if (employee.status === 'inactive') {
+      return res.status(400).json({ message: 'Employee is already deactivated' });
+    }
+
+    // Soft delete by changing status
+    employee.status = 'inactive';
+    await employee.save();
+
+    res.json({ 
+      message: 'Employee deactivated successfully',
+      employee: {
+        id: employee._id,
+        name: employee.name,
+        employeeId: employee.employeeId,
+        status: employee.status
+      }
+    });
+  } catch (error) {
+    console.error('Deactivate employee error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// @route   PUT /api/employees/:id/activate
+// @desc    Activate employee
+// @access  Private (Admin/Manager)
+router.put('/:id/activate', [auth, adminOrManager], async (req, res) => {
+  try {
+    const employee = await Employee.findById(req.params.id);
+    
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    if (employee.status === 'active') {
+      return res.status(400).json({ message: 'Employee is already active' });
+    }
+
+    // Activate employee
+    employee.status = 'active';
+    await employee.save();
+
+    res.json({ 
+      message: 'Employee activated successfully',
+      employee: {
+        id: employee._id,
+        name: employee.name,
+        employeeId: employee.employeeId,
+        status: employee.status
+      }
+    });
+  } catch (error) {
+    console.error('Activate employee error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   DELETE /api/employees/:id
-// @desc    Soft delete employee
+// @desc    Permanently delete employee
 // @access  Private (Admin only)
 router.delete('/:id', [auth, adminOnly], async (req, res) => {
   try {
@@ -189,11 +313,22 @@ router.delete('/:id', [auth, adminOnly], async (req, res) => {
       return res.status(404).json({ message: 'Employee not found' });
     }
 
-    // Soft delete by changing status
-    employee.status = 'inactive';
-    await employee.save();
+    // Check if employee has associated timesheets or other data
+    // You might want to add additional checks here based on your business logic
+    const employeeId = employee.employeeId;
+    const employeeName = employee.name;
 
-    res.json({ message: 'Employee deactivated successfully' });
+    // Permanently delete the employee
+    await Employee.findByIdAndDelete(req.params.id);
+
+    res.json({ 
+      message: 'Employee permanently deleted successfully',
+      deletedEmployee: {
+        id: employee._id,
+        name: employeeName,
+        employeeId: employeeId
+      }
+    });
   } catch (error) {
     console.error('Delete employee error:', error);
     res.status(500).json({ message: 'Server error' });

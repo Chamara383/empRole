@@ -11,6 +11,8 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
     payRate: '',
     otRate: '',
     vacationPayRate: '',
+    email: '', // Email for login (used as username)
+    password: '', // Password for login
     breakTimeConfig: {
       isPaid: false,
       duration: 0,
@@ -116,8 +118,23 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
       newErrors.breakDuration = 'Break duration cannot be negative';
     }
 
+    // Email and password are required only when creating a new employee
+    if (!employee) {
+      if (!formData.email.trim()) {
+        newErrors.email = 'Email is required for login';
+      } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        newErrors.email = 'Invalid email format';
+      }
+
+      if (!formData.password.trim()) {
+        newErrors.password = 'Password is required';
+      } else if (formData.password.length < 6) {
+        newErrors.password = 'Password must be at least 6 characters';
+      }
+    }
+
     if (formData.personalInfo.email && !/\S+@\S+\.\S+/.test(formData.personalInfo.email)) {
-      newErrors.email = 'Invalid email format';
+      newErrors.personalEmail = 'Invalid personal email format';
     }
 
     if (formData.passwordResetInfo.dateOfBirth) {
@@ -158,15 +175,33 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
       };
 
       if (employee) {
-        await employeesAPI.updateEmployee(employee._id, submitData);
+        // When editing, don't send email and password (user account already exists)
+        const { email, password, ...updateData } = submitData;
+        await employeesAPI.updateEmployee(employee._id, updateData);
+        onSuccess();
       } else {
-        await employeesAPI.createEmployee(submitData);
+        const response = await employeesAPI.createEmployee(submitData);
+        
+        // If user credentials were created, show them to the user
+        if (response.data.userCredentials) {
+          const credentials = response.data.userCredentials;
+          const credentialsMessage = 
+            `Employee created successfully!\n\n` +
+            `Login Credentials:\n` +
+            `Email/Username: ${credentials.email}\n\n` +
+            `${credentials.message}`;
+          
+          alert(credentialsMessage);
+        }
+        
+        onSuccess();
       }
-
-      onSuccess();
     } catch (error) {
       console.error('Error saving employee:', error);
-      setErrors({ submit: 'Failed to save employee. Please try again.' });
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          'Failed to save employee. Please try again.';
+      setErrors({ submit: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -245,13 +280,49 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                 />
               </div>
             </div>
+
+            {/* Login Credentials - Only show when creating new employee */}
+            {!employee && (
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="email">Login Email *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={errors.email ? 'error' : ''}
+                    placeholder="employee@company.com"
+                  />
+                  {errors.email && <span className="field-error">{errors.email}</span>}
+                  <small className="field-help">This email will be used as the username for login</small>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="password">Login Password *</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={errors.password ? 'error' : ''}
+                    placeholder="Minimum 6 characters"
+                    minLength="6"
+                  />
+                  {errors.password && <span className="field-error">{errors.password}</span>}
+                  <small className="field-help">Set the initial password for the employee</small>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="form-section">
             <h3>Pay Rates</h3>
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="payRate">Regular Pay Rate ($/hour) *</label>
+                <label htmlFor="payRate">Regular Pay Rate (LKR/hour) *</label>
                 <input
                   type="number"
                   id="payRate"
@@ -267,7 +338,7 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="otRate">Overtime Rate ($/hour) *</label>
+                <label htmlFor="otRate">Overtime Rate (LKR/hour) *</label>
                 <input
                   type="number"
                   id="otRate"
@@ -283,7 +354,7 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="vacationPayRate">Vacation Pay Rate ($/hour) *</label>
+                <label htmlFor="vacationPayRate">Vacation Pay Rate (LKR/hour) *</label>
                 <input
                   type="number"
                   id="vacationPayRate"

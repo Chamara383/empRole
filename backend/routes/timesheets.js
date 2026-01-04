@@ -127,10 +127,10 @@ router.get('/employee/:employeeId', [auth, adminOrManager], async (req, res) => 
 
 // @route   POST /api/timesheets
 // @desc    Create daily timesheet entry
-// @access  Private (Admin/Manager)
+// @access  Private (All roles - employees can create their own)
 router.post('/', [
   auth,
-  adminOrManager,
+  allRoles,
   body('date').isISO8601().withMessage('Valid date is required'),
   body('employeeId').isMongoId().withMessage('Valid employee ID is required'),
   body('startTime').matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Start time must be in HH:MM format'),
@@ -161,6 +161,15 @@ router.post('/', [
     const employee = await Employee.findById(employeeId);
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    // If user is an employee, ensure they can only create timesheets for themselves
+    if (req.user.role === 'employee') {
+      if (employeeId.toString() !== req.user.linkedEmployeeId.toString()) {
+        return res.status(403).json({ 
+          message: 'You can only create timesheets for yourself' 
+        });
+      }
     }
 
     // Check if timesheet already exists for this date and employee
@@ -205,10 +214,10 @@ router.post('/', [
 
 // @route   PUT /api/timesheets/:id
 // @desc    Update timesheet entry
-// @access  Private (Admin/Manager)
+// @access  Private (All roles - employees can update their own)
 router.put('/:id', [
   auth,
-  adminOrManager,
+  allRoles,
   body('startTime').optional().matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('Start time must be in HH:MM format'),
   body('endTime').optional().matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).withMessage('End time must be in HH:MM format'),
   body('breakTime').optional().isNumeric().withMessage('Break time must be a number'),
@@ -226,6 +235,23 @@ router.put('/:id', [
     
     if (!timesheet) {
       return res.status(404).json({ message: 'Timesheet not found' });
+    }
+
+    // If user is an employee, ensure they can only update their own timesheets
+    if (req.user.role === 'employee') {
+      // Populate employeeId if not already populated
+      if (!timesheet.employeeId._id) {
+        await timesheet.populate('employeeId', '_id');
+      }
+      const timesheetEmployeeId = timesheet.employeeId._id 
+        ? timesheet.employeeId._id.toString() 
+        : timesheet.employeeId.toString();
+      
+      if (timesheetEmployeeId !== req.user.linkedEmployeeId.toString()) {
+        return res.status(403).json({ 
+          message: 'You can only update your own timesheets' 
+        });
+      }
     }
 
     // Update timesheet

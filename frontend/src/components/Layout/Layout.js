@@ -12,8 +12,10 @@ const Layout = ({ children }) => {
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: '🏠', roles: ['admin', 'manager', 'employee'] },
-    { name: 'Employees', href: '/employees', icon: '👥', roles: ['admin'] },
+    { name: 'Employees', href: '/employees', icon: '👥', roles: ['admin', 'manager'] },
+    { name: 'User Management', href: '/user-management', icon: '👤', roles: ['admin'] },
     { name: 'Timesheets', href: '/timesheets', icon: '⏰', roles: ['admin', 'manager', 'employee'] },
+    { name: 'Expenses', href: '/expenses', icon: '💰', roles: ['admin', 'manager', 'employee'] },
     { name: 'Reports', href: '/reports', icon: '📊', roles: ['admin', 'manager', 'employee'] },
   ];
 
@@ -97,6 +99,9 @@ const Layout = ({ children }) => {
                 className="user-info-btn"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
               >
+                <div className="user-avatar">
+                  <span>{user?.username?.charAt(0).toUpperCase()}</span>
+                </div>
                 <div className="user-info">
                   <span className="user-name">{user?.username}</span>
                   <span className="user-role">{user?.role}</span>
@@ -113,14 +118,6 @@ const Layout = ({ children }) => {
                   >
                     <span className="dropdown-icon">👤</span>
                     Profile & Settings
-                  </Link>
-                  <Link 
-                    to="/change-password" 
-                    className="dropdown-item"
-                    onClick={() => setUserMenuOpen(false)}
-                  >
-                    <span className="dropdown-icon">🔐</span>
-                    Change Password
                   </Link>
                   <div className="dropdown-divider"></div>
                   <button 
