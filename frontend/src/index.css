@@ -1,3 +1,68 @@
+:root {
+  /* Light theme colors */
+  --bg-primary: #f5f7fa;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8f9fa;
+  --bg-hover: #e9ecef;
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --border-color: #e1e5e9;
+  --border-color-light: #e9ecef;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-auth: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --color-primary: #667eea;
+  --color-primary-dark: #764ba2;
+  --color-success: #28a745;
+  --color-success-bg: #d4edda;
+  --color-success-text: #155724;
+  --color-danger: #e74c3c;
+  --color-danger-bg: #f8d7da;
+  --color-danger-text: #721c24;
+  --color-warning: #f57c00;
+  --color-warning-bg: #fff3e0;
+  --color-info: #1976d2;
+  --color-info-bg: #d1ecf1;
+  --color-info-text: #0c5460;
+}
+
+[data-theme="dark"] {
+  /* Dark theme colors - Matching the teal/green budgeting app aesthetic */
+  --bg-primary: #0a0e27;
+  --bg-secondary: #0f1626;
+  --bg-tertiary: #1a1f35;
+  --bg-hover: #252b45;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b8c8;
+  --text-tertiary: #8b94a3;
+  --border-color: #2a3149;
+  --border-color-light: #1f2538;
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.7);
+  --gradient-primary: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+  --gradient-auth: linear-gradient(135deg, #0a0e27 0%, #0f1626 100%);
+  --color-primary: #14b8a6;
+  --color-primary-dark: #0d9488;
+  --color-teal: #14b8a6;
+  --color-teal-light: #2dd4bf;
+  --color-teal-dark: #0d9488;
+  --color-success: #10b981;
+  --color-success-bg: rgba(16, 185, 129, 0.15);
+  --color-success-text: #34d399;
+  --color-danger: #ef4444;
+  --color-danger-bg: rgba(239, 68, 68, 0.15);
+  --color-danger-text: #f87171;
+  --color-warning: #f59e0b;
+  --color-warning-bg: rgba(245, 158, 11, 0.15);
+  --color-info: #06b6d4;
+  --color-info-bg: rgba(6, 182, 212, 0.15);
+  --color-info-text: #22d3ee;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +70,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 code {
