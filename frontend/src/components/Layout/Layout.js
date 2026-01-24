@@ -21,8 +21,13 @@ const Layout = ({ children }) => {
     { name: 'Reports', href: '/reports', icon: '📊', roles: ['admin', 'manager', 'employee'] },
   ];
 
-  const filteredNavigation = navigation.filter(item => 
+  const filteredNavigation = navigation.filter(item =>
     item.roles.includes(user?.role)
+  );
+
+  // Filter navigation for mobile bottom nav (exclude Reports)
+  const mobileBottomNav = filteredNavigation.filter(item =>
+    item.name !== 'Reports'
   );
 
   const handleLogout = () => {
@@ -56,14 +61,14 @@ const Layout = ({ children }) => {
       <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <h2>Labor Grid</h2>
-          <button 
+          <button
             className="sidebar-toggle mobile-only"
             onClick={() => setSidebarOpen(false)}
           >
             ×
           </button>
         </div>
-        
+
         <nav className="sidebar-nav">
           {filteredNavigation.map((item) => (
             <Link
@@ -84,7 +89,7 @@ const Layout = ({ children }) => {
         {/* Top Bar */}
         <header className="topbar">
           <div className="topbar-left">
-            <button 
+            <button
               className="sidebar-toggle mobile-only"
               onClick={() => setSidebarOpen(true)}
             >
@@ -94,9 +99,9 @@ const Layout = ({ children }) => {
               {filteredNavigation.find(item => isActive(item.href))?.name || 'Dashboard'}
             </h1>
           </div>
-          
+
           <div className="topbar-right">
-            <button 
+            <button
               className="theme-toggle"
               onClick={toggleTheme}
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -104,9 +109,9 @@ const Layout = ({ children }) => {
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            
+
             <div className="user-menu" ref={userMenuRef}>
-              <button 
+              <button
                 className="user-info-btn"
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
               >
@@ -119,11 +124,11 @@ const Layout = ({ children }) => {
                 </div>
                 <span className="dropdown-arrow">▼</span>
               </button>
-              
+
               {userMenuOpen && (
                 <div className="user-dropdown">
-                  <Link 
-                    to="/profile" 
+                  <Link
+                    to="/profile"
                     className="dropdown-item"
                     onClick={() => setUserMenuOpen(false)}
                   >
@@ -131,7 +136,7 @@ const Layout = ({ children }) => {
                     Profile & Settings
                   </Link>
                   <div className="dropdown-divider"></div>
-                  <button 
+                  <button
                     className="dropdown-item logout-item"
                     onClick={() => {
                       setUserMenuOpen(false);
@@ -155,11 +160,29 @@ const Layout = ({ children }) => {
 
       {/* Mobile Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="mobile-overlay"
           onClick={() => setSidebarOpen(false)}
         />
       )}
+
+      {/* Bottom Navigation Bar (Mobile Only) */}
+      <nav className="bottom-nav mobile-only">
+        <ul className="bottom-nav-list">
+          {mobileBottomNav.map((item) => (
+            <li key={item.name} className="bottom-nav-list-item">
+              <Link
+                to={item.href}
+                className={`bottom-nav-item ${isActive(item.href) ? 'active' : ''}`}
+                onClick={() => setSidebarOpen(false)}
+              >
+                <span className="bottom-nav-icon">{item.icon}</span>
+                <span className="bottom-nav-text">{item.name}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   );
 };

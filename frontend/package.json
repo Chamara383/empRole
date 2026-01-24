@@ -23,6 +23,7 @@
     "test": "NODE_OPTIONS=--openssl-legacy-provider react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "http://localhost:3000",
 
   "eslintConfig": {
     "extends": [
@@ -44,7 +45,6 @@
     ]
   },
 
-  "proxy": "https://emprole-production.up.railway.app/api",
 
   "engines": {
     "node": ">=18"
