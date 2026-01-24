@@ -75,12 +75,7 @@ const ExpenseList = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-    loadEmployees();
-    loadExpenses();
-  }, [loadExpenses]);
-
-  const loadEmployees = async () => {
+  const loadEmployees = React.useCallback(async () => {
     // Only load employees list for admin/manager (employees don't have access to this API)
     if (user && (user.role === 'admin' || user.role === 'manager')) {
       try {
@@ -90,7 +85,12 @@ const ExpenseList = () => {
         console.error('Error loading employees:', err);
       }
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadEmployees();
+    loadExpenses();
+  }, [loadExpenses, loadEmployees]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;

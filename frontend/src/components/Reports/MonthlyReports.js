@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { reportsAPI, employeesAPI } from '../../services/api';
-import { useAuth } from '../../context/AuthContext';
 import './MonthlyReports.css';
 
 const MonthlyReports = () => {

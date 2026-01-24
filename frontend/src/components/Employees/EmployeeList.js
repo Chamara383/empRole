@@ -5,7 +5,7 @@ import EmployeeForm from './EmployeeForm';
 import './EmployeeList.css';
 
 const EmployeeList = () => {
-  const { user, isAuthenticated, token } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
