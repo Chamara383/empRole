@@ -28,7 +28,7 @@ const TimesheetList = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const params = {
         page: pagination.currentPage,
         limit: 10,
@@ -70,12 +70,7 @@ const TimesheetList = () => {
     }
   }, [user]);
 
-  useEffect(() => {
-    loadEmployees();
-    loadTimesheets();
-  }, [loadTimesheets]);
-
-  const loadEmployees = async () => {
+  const loadEmployees = React.useCallback(async () => {
     // Only load employees list for admin/manager (employees don't have access to this API)
     if (user && (user.role === 'admin' || user.role === 'manager')) {
       try {
@@ -86,7 +81,12 @@ const TimesheetList = () => {
       }
     }
     // For employees, the employees array will be empty, but the form will use timesheet data or user info
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadEmployees();
+    loadTimesheets();
+  }, [loadTimesheets, loadEmployees]);
 
 
   const handleFilterChange = (e) => {
@@ -180,7 +180,6 @@ const TimesheetList = () => {
     return typeof employeeId === 'object' ? employeeId._id : employeeId;
   };
 
-  const isEmployeeRole = user && user.role === 'employee';
   const isAdminOrManager = user && (user.role === 'admin' || user.role === 'manager');
 
   if (loading && timesheets.length === 0) {
@@ -361,25 +360,25 @@ const TimesheetList = () => {
         <div className="pagination">
           <button
             className="page-btn"
-            onClick={() => setPagination(prev => ({ 
-              ...prev, 
-              currentPage: Math.max(1, prev.currentPage - 1) 
+            onClick={() => setPagination(prev => ({
+              ...prev,
+              currentPage: Math.max(1, prev.currentPage - 1)
             }))}
             disabled={pagination.currentPage === 1}
           >
             Previous
           </button>
-          
+
           <span className="page-info">
-            Page {pagination.currentPage} of {pagination.totalPages} 
+            Page {pagination.currentPage} of {pagination.totalPages}
             ({pagination.total} total)
           </span>
-          
+
           <button
             className="page-btn"
-            onClick={() => setPagination(prev => ({ 
-              ...prev, 
-              currentPage: Math.min(prev.totalPages, prev.currentPage + 1) 
+            onClick={() => setPagination(prev => ({
+              ...prev,
+              currentPage: Math.min(prev.totalPages, prev.currentPage + 1)
             }))}
             disabled={pagination.currentPage === pagination.totalPages}
           >

@@ -21,7 +21,7 @@ const Login = () => {
 
   useEffect(() => {
     return () => clearError();
-  }, []);
+  }, [clearError]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
