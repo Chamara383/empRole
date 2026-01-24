@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
@@ -29,7 +29,7 @@ const Login = () => {
       ...prev,
       [name]: value,
     }));
-    
+
     // Clear field error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
@@ -58,7 +58,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
