@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true };
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
+      const errorMessage = error.response?.data?.message || '';
       dispatch({
         type: 'LOGIN_FAILURE',
         payload: errorMessage,
@@ -149,9 +149,9 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'LOGOUT' });
   };
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     dispatch({ type: 'CLEAR_ERROR' });
-  };
+  }, []);
 
   const value = {
     ...state,
