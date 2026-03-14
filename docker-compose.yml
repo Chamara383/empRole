@@ -1,24 +1,14 @@
 services:
   backend:
-    build:
-      context: ./backend
+    image: chamara133/emprole-backend
     ports:
       - "5002:5002"
     env_file:
       - ./backend/.env
-    environment:
-      PORT: 5002
-      NODE_ENV: development
-      FRONTEND_URL: http://localhost:5001
 
   frontend:
-    build:
-      context: ./frontend
+    image: chamara133/emprole-frontend
     ports:
       - "5001:5001"
-    environment:
-      HOST: 0.0.0.0
-      CHOKIDAR_USEPOLLING: "true"
-      REACT_APP_API_URL: http://localhost:5002/api
-    depends_on:
-      - backend
+    env_file:
+      - ./frontend/.env
