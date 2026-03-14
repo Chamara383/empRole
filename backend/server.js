@@ -22,6 +22,7 @@ const allowedOrigins = [
   'http://127.0.0.1:3001',
   'http://127.0.0.1:5001',
   'http://127.0.0.1:5002',
+  'http://67.202.16.83',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
