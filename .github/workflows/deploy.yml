@@ -2,15 +2,39 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: emprole-prod
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    # If you stored secrets under an Environment, uncomment and set name:
+    # environment: production
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Validate required secrets
+        env:
+          DH_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          DH_PASS: ${{ secrets.DOCKERHUB_PASSWORD }}
+          SSH_HOST: ${{ secrets.SERVER_HOST }}
+          SSH_USER: ${{ secrets.SERVER_USERNAME }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          [ -n "$DH_USER" ] || { echo "Missing DOCKERHUB_USERNAME"; exit 1; }
+          [ -n "$DH_PASS" ] || { echo "Missing DOCKERHUB_PASSWORD"; exit 1; }
+          [ -n "$SSH_HOST" ] || { echo "Missing SERVER_HOST"; exit 1; }
+          [ -n "$SSH_USER" ] || { echo "Missing SERVER_USERNAME"; exit 1; }
+          [ -n "$SSH_KEY" ] || { echo "Missing SSH_PRIVATE_KEY"; exit 1; }
+          echo "All required secrets are present."
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -28,7 +52,9 @@ jobs:
           file: ./backend/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/emprole-backend:latest
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-backend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-backend:${{ github.sha }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
@@ -37,7 +63,9 @@ jobs:
           file: ./frontend/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/emprole-frontend:latest
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-frontend:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-frontend:${{ github.sha }}
 
       - name: Deploy to server
         uses: appleboy/ssh-action@v1.0.3
@@ -46,6 +74,12 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            set -e
             cd /srv/emprole
+
+            # Needed if Docker Hub repos are private
+            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
             docker compose pull
             docker compose up -d --remove-orphans
+            docker image prune -f
