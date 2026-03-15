@@ -245,22 +245,22 @@
 }
 
 .status-active {
-  background: #d4edda;
-  color: #155724;
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
 }
 
 .status-inactive {
-  background: #f8d7da;
-  color: #721c24;
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
 }
 
 .status-terminated {
-  background: #d1ecf1;
-  color: #0c5460;
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
 }
 
 .employee-date {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -280,41 +280,41 @@
 }
 
 .action-btn.edit:hover {
-  background: #e3f2fd;
+  background: rgba(6, 182, 212, 0.18);
   transform: scale(1.1);
 }
 
 .action-btn.delete:hover {
-  background: #ffebee;
+  background: rgba(239, 68, 68, 0.18);
   transform: scale(1.1);
 }
 
 .action-btn.deactivate {
-  background: #fff3e0;
-  color: #f57c00;
-  border: 1px solid #ffb74d;
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border: 1px solid rgba(245, 158, 11, 0.45);
 }
 
 .action-btn.deactivate:hover {
-  background: #ffe0b2;
+  background: rgba(245, 158, 11, 0.25);
   transform: scale(1.1);
 }
 
 .action-btn.activate {
-  background: #e8f5e8;
-  color: #2e7d32;
-  border: 1px solid #81c784;
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid rgba(16, 185, 129, 0.45);
 }
 
 .action-btn.activate:hover {
-  background: #c8e6c9;
+  background: rgba(16, 185, 129, 0.25);
   transform: scale(1.1);
 }
 
 .no-data {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
@@ -360,15 +360,26 @@
 }
 
 .page-info {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
 .loading {
   text-align: center;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1rem;
   padding: 40px;
+}
+
+.filter-select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .status-active,
+[data-theme="dark"] .status-inactive,
+[data-theme="dark"] .status-terminated {
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Responsive design */
@@ -405,9 +416,9 @@
 
   .employee-table tr {
     margin-bottom: 15px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    background: white;
+    background: var(--bg-secondary);
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
 
@@ -416,7 +427,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color-light);
     text-align: right;
   }
 
@@ -429,7 +440,7 @@
   .employee-table td::before {
     content: attr(data-label);
     font-weight: 600;
-    color: #444;
+    color: var(--text-secondary);
     text-align: left;
     margin-right: 15px;
   }
