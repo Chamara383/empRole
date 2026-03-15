@@ -1,4 +1,4 @@
-.modal-overlay {
+.timesheet-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -23,7 +23,7 @@
   }
 }
 
-.modal-content {
+.timesheet-modal-content {
   background: var(--bg-secondary);
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
@@ -49,7 +49,7 @@
   }
 }
 
-.modal-header {
+.timesheet-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -62,7 +62,7 @@
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.modal-header h2 {
+.timesheet-modal-header h2 {
   color: var(--text-primary);
   font-size: 1.75rem;
   font-weight: 700;
@@ -71,7 +71,7 @@
   transition: color 0.3s ease;
 }
 
-.close-btn {
+.timesheet-close-btn {
   background: var(--bg-tertiary);
   border: none;
   font-size: 1.75rem;
@@ -88,7 +88,7 @@
   line-height: 1;
 }
 
-.close-btn:hover {
+.timesheet-close-btn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
   transform: rotate(90deg);
@@ -101,13 +101,13 @@
   gap: 32px;
 }
 
-.form-section {
+.timesheet-form-section {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.form-section h3 {
+.timesheet-form-section h3 {
   color: var(--text-primary);
   font-size: 1.25rem;
   font-weight: 700;
@@ -120,20 +120,20 @@
   font-size: 0.875rem;
 }
 
-.form-row {
+.timesheet-form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 24px;
   align-items: start;
 }
 
-.form-group {
+.timesheet-form-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.form-group label {
+.timesheet-form-group label {
   color: var(--text-primary);
   font-weight: 600;
   font-size: 0.9rem;
@@ -143,7 +143,7 @@
   gap: 6px;
 }
 
-.form-group label::after {
+.timesheet-form-group label::after {
   content: '*';
   color: var(--color-danger);
   margin-left: 4px;
@@ -151,15 +151,15 @@
   transition: opacity 0.3s ease;
 }
 
-.form-group:has(input[required]) label::after,
-.form-group:has(select[required]) label::after,
-.form-group:has(textarea[required]) label::after {
+.timesheet-form-group:has(input[required]) label::after,
+.timesheet-form-group:has(select[required]) label::after,
+.timesheet-form-group:has(textarea[required]) label::after {
   opacity: 1;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.timesheet-form-group input,
+.timesheet-form-group select,
+.timesheet-form-group textarea {
   padding: 14px 18px;
   border: 2px solid var(--border-color);
   border-radius: 12px;
@@ -172,29 +172,29 @@
   font-weight: 500;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.timesheet-form-group input:focus,
+.timesheet-form-group select:focus,
+.timesheet-form-group textarea:focus {
   outline: none;
-  border-color: var(--color-teal);
+  border-color: var(--color-teal, var(--color-primary));
   box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
   background: var(--bg-secondary);
 }
 
-.form-group textarea {
+.timesheet-form-group textarea {
   min-height: 120px;
   resize: vertical;
   font-family: inherit;
 }
 
-.form-group input.error,
-.form-group select.error,
-.form-group textarea.error {
+.timesheet-form-group input.error,
+.timesheet-form-group select.error,
+.timesheet-form-group textarea.error {
   border-color: var(--color-danger);
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
-.field-error {
+.timesheet-field-error {
   color: var(--color-danger-text);
   font-size: 0.85rem;
   margin-top: 4px;
@@ -204,36 +204,36 @@
   font-weight: 500;
 }
 
-.field-help {
+.timesheet-field-help {
   color: var(--text-secondary);
   font-size: 0.85rem;
   margin-top: 4px;
   transition: color 0.3s ease;
 }
 
-.checkbox-group {
+.timesheet-checkbox-group {
   flex-direction: row;
   align-items: center;
   gap: 12px;
 }
 
-.checkbox-group input[type="checkbox"] {
+.timesheet-checkbox-group input[type="checkbox"] {
   width: auto;
   margin: 0;
   cursor: pointer;
 }
 
-.checkbox-group label {
+.timesheet-checkbox-group label {
   margin: 0;
   cursor: pointer;
   font-weight: 500;
 }
 
-.checkbox-group label::after {
+.timesheet-checkbox-group label::after {
   display: none;
 }
 
-.form-actions {
+.timesheet-form-actions {
   display: flex;
   gap: 16px;
   justify-content: flex-end;
@@ -243,7 +243,7 @@
   flex-wrap: wrap;
 }
 
-.form-btn {
+.timesheet-form-btn {
   padding: 14px 28px;
   border: none;
   border-radius: 12px;
@@ -258,37 +258,37 @@
   gap: 8px;
 }
 
-.form-btn.primary {
-  background: var(--color-teal);
+.timesheet-form-btn.primary {
+  background: var(--color-teal, var(--color-primary));
   color: white;
   box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
 }
 
-.form-btn.primary:hover:not(:disabled) {
+.timesheet-form-btn.primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(20, 184, 166, 0.4);
-  background: var(--color-teal-light);
+  background: var(--color-teal-light, var(--color-primary-dark));
 }
 
-.form-btn.secondary {
+.timesheet-form-btn.secondary {
   background: var(--bg-tertiary);
   color: var(--text-primary);
   border: 2px solid var(--border-color);
 }
 
-.form-btn.secondary:hover {
+.timesheet-form-btn.secondary:hover {
   background: var(--bg-hover);
-  border-color: var(--color-teal);
+  border-color: var(--color-teal, var(--color-primary));
   transform: translateY(-1px);
 }
 
-.form-btn:disabled {
+.timesheet-form-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
-.error-message {
+.timesheet-error-message {
   background: var(--color-danger-bg);
   color: var(--color-danger-text);
   padding: 16px 20px;
@@ -336,7 +336,7 @@
 
 .total-hours-display {
   padding: 20px;
-  background: var(--color-teal);
+  background: var(--color-teal, var(--color-primary));
   color: white;
   border-radius: 12px;
   text-align: center;
@@ -361,21 +361,21 @@
 
 /* Responsive Form */
 @media (max-width: 768px) {
-  .modal-overlay {
+  .timesheet-modal-overlay {
     padding: 12px;
   }
 
-  .modal-content {
+  .timesheet-modal-content {
     max-width: 100%;
     max-height: 95vh;
     border-radius: 16px;
   }
 
-  .modal-header {
+  .timesheet-modal-header {
     padding: 20px 24px;
   }
 
-  .modal-header h2 {
+  .timesheet-modal-header h2 {
     font-size: 1.5rem;
   }
 
@@ -384,11 +384,11 @@
     gap: 24px;
   }
 
-  .form-section {
+  .timesheet-form-section {
     gap: 20px;
   }
 
-  .form-row {
+  .timesheet-form-row {
     grid-template-columns: 1fr;
     gap: 20px;
   }
@@ -398,22 +398,22 @@
     gap: 20px;
   }
 
-  .form-actions {
+  .timesheet-form-actions {
     flex-direction: column-reverse;
     gap: 12px;
   }
 
-  .form-btn {
+  .timesheet-form-btn {
     width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .modal-header {
+  .timesheet-modal-header {
     padding: 16px 20px;
   }
 
-  .modal-header h2 {
+  .timesheet-modal-header h2 {
     font-size: 1.25rem;
   }
 
@@ -422,13 +422,13 @@
     gap: 20px;
   }
 
-  .form-section {
+  .timesheet-form-section {
     gap: 18px;
   }
 
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
+  .timesheet-form-group input,
+  .timesheet-form-group select,
+  .timesheet-form-group textarea {
     padding: 12px 16px;
     font-size: 0.95rem;
   }

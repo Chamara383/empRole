@@ -183,24 +183,24 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
 
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <div className="modal-header">
+    <div className="timesheet-modal-overlay">
+      <div className="timesheet-modal-content">
+        <div className="timesheet-modal-header">
           <h2>{timesheet ? 'Edit Timesheet Entry' : 'Add Timesheet Entry'}</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="timesheet-close-btn" onClick={onClose}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="timesheet-form">
           {errors.submit && (
-            <div className="error-message">
+            <div className="timesheet-error-message">
               {errors.submit}
             </div>
           )}
 
-          <div className="form-section">
+          <div className="timesheet-form-section">
             <h3>Basic Information</h3>
-            <div className="form-row">
-              <div className="form-group">
+            <div className="timesheet-form-row">
+              <div className="timesheet-form-group">
                 <label htmlFor="date">Date *</label>
                 <input
                   type="date"
@@ -210,10 +210,10 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
                   onChange={handleChange}
                   className={errors.date ? 'error' : ''}
                 />
-                {errors.date && <span className="field-error">{errors.date}</span>}
+                {errors.date && <span className="timesheet-field-error">{errors.date}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="timesheet-form-group">
                 <label htmlFor="employeeId">Employee *</label>
                 {user && user.role === 'employee' ? (
                   <input
@@ -245,15 +245,15 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
                     ))}
                   </select>
                 )}
-                {errors.employeeId && <span className="field-error">{errors.employeeId}</span>}
+                {errors.employeeId && <span className="timesheet-field-error">{errors.employeeId}</span>}
               </div>
             </div>
           </div>
 
-          <div className="form-section">
+          <div className="timesheet-form-section">
             <h3>Time Details</h3>
-            <div className="form-row">
-              <div className="form-group">
+            <div className="timesheet-form-row">
+              <div className="timesheet-form-group">
                 <label htmlFor="startTime">Start Time *</label>
                 <input
                   type="time"
@@ -263,10 +263,10 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
                   onChange={handleChange}
                   className={errors.startTime ? 'error' : ''}
                 />
-                {errors.startTime && <span className="field-error">{errors.startTime}</span>}
+                {errors.startTime && <span className="timesheet-field-error">{errors.startTime}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="timesheet-form-group">
                 <label htmlFor="endTime">End Time *</label>
                 <input
                   type="time"
@@ -276,10 +276,10 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
                   onChange={handleChange}
                   className={errors.endTime ? 'error' : ''}
                 />
-                {errors.endTime && <span className="field-error">{errors.endTime}</span>}
+                {errors.endTime && <span className="timesheet-field-error">{errors.endTime}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="timesheet-form-group">
                 <label htmlFor="breakTime">Break Time (minutes)</label>
                 <input
                   type="number"
@@ -292,7 +292,7 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
                   max="480"
                   placeholder="0"
                 />
-                {errors.breakTime && <span className="field-error">{errors.breakTime}</span>}
+                {errors.breakTime && <span className="timesheet-field-error">{errors.breakTime}</span>}
               </div>
             </div>
 
@@ -313,10 +313,10 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
             )}
           </div>
 
-          <div className="form-section">
+          <div className="timesheet-form-section">
             <h3>Work Type</h3>
-            <div className="form-row">
-              <div className="form-group checkbox-group">
+            <div className="timesheet-form-row">
+              <div className="timesheet-form-group timesheet-checkbox-group">
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
@@ -329,7 +329,7 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
                 </label>
               </div>
 
-              <div className="form-group checkbox-group">
+              <div className="timesheet-form-group timesheet-checkbox-group">
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
@@ -344,9 +344,9 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
             </div>
           </div>
 
-          <div className="form-section">
+          <div className="timesheet-form-section">
             <h3>Additional Information</h3>
-            <div className="form-group">
+            <div className="timesheet-form-group">
               <label htmlFor="notes">Notes</label>
               <textarea
                 id="notes"
@@ -358,18 +358,18 @@ const TimesheetForm = ({ timesheet, employees, onClose, onSuccess }) => {
                 rows="3"
                 maxLength="500"
               />
-              {errors.notes && <span className="field-error">{errors.notes}</span>}
-              <div className="char-count">
+              {errors.notes && <span className="timesheet-field-error">{errors.notes}</span>}
+              <div className="timesheet-char-count">
                 {formData.notes.length}/500 characters
               </div>
             </div>
           </div>
 
-          <div className="form-actions">
-            <button type="button" className="cancel-btn" onClick={onClose}>
+          <div className="timesheet-form-actions">
+            <button type="button" className="timesheet-form-btn secondary" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="submit-btn" disabled={loading}>
+            <button type="submit" className="timesheet-form-btn primary" disabled={loading}>
               {loading ? 'Saving...' : (timesheet ? 'Update Timesheet' : 'Add Timesheet')}
             </button>
           </div>
