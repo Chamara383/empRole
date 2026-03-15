@@ -136,24 +136,24 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <div className="modal-header">
+    <div className="expense-modal-overlay">
+      <div className="expense-modal-content">
+        <div className="expense-modal-header">
           <h2>{expense ? 'Edit Expense Entry' : 'Add Expense Entry'}</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="expense-close-btn" onClick={onClose}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="expense-form">
           {errors.submit && (
-            <div className="error-message">
+            <div className="expense-error-message">
               {errors.submit}
             </div>
           )}
 
-          <div className="form-section">
+          <div className="expense-form-section">
             <h3>Basic Information</h3>
-            <div className="form-row">
-              <div className="form-group">
+            <div className="expense-form-row">
+              <div className="expense-form-group">
                 <label htmlFor="date">Date *</label>
                 <input
                   type="date"
@@ -163,10 +163,10 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
                   onChange={handleChange}
                   className={errors.date ? 'error' : ''}
                 />
-                {errors.date && <span className="field-error">{errors.date}</span>}
+                {errors.date && <span className="expense-field-error">{errors.date}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="expense-form-group">
                 <label htmlFor="employeeId">Employee *</label>
                 {user && user.role === 'employee' ? (
                   <input
@@ -198,15 +198,15 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
                     ))}
                   </select>
                 )}
-                {errors.employeeId && <span className="field-error">{errors.employeeId}</span>}
+                {errors.employeeId && <span className="expense-field-error">{errors.employeeId}</span>}
               </div>
             </div>
           </div>
 
-          <div className="form-section">
+          <div className="expense-form-section">
             <h3>Expense Details</h3>
-            <div className="form-row">
-              <div className="form-group">
+            <div className="expense-form-row">
+              <div className="expense-form-group">
                 <label htmlFor="category">Category *</label>
                 <select
                   id="category"
@@ -221,10 +221,10 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
                   <option value="supplies">Supplies</option>
                   <option value="other">Other</option>
                 </select>
-                {errors.category && <span className="field-error">{errors.category}</span>}
+                {errors.category && <span className="expense-field-error">{errors.category}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="expense-form-group">
                 <label htmlFor="amount">Amount (LKR) *</label>
                 <input
                   type="number"
@@ -237,10 +237,10 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
                   min="0"
                   placeholder="0.00"
                 />
-                {errors.amount && <span className="field-error">{errors.amount}</span>}
+                {errors.amount && <span className="expense-field-error">{errors.amount}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="expense-form-group">
                 <label htmlFor="currency">Currency</label>
                 <select
                   id="currency"
@@ -255,7 +255,7 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="expense-form-group">
               <label htmlFor="description">Description *</label>
               <input
                 type="text"
@@ -267,10 +267,10 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
                 placeholder="Brief description of the expense"
                 maxLength="500"
               />
-              {errors.description && <span className="field-error">{errors.description}</span>}
+              {errors.description && <span className="expense-field-error">{errors.description}</span>}
             </div>
 
-            <div className="form-group">
+            <div className="expense-form-group">
               <label htmlFor="receipt">Receipt URL (Optional)</label>
               <input
                 type="text"
@@ -283,9 +283,9 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
             </div>
           </div>
 
-          <div className="form-section">
+          <div className="expense-form-section">
             <h3>Additional Information</h3>
-            <div className="form-group">
+            <div className="expense-form-group">
               <label htmlFor="notes">Notes</label>
               <textarea
                 id="notes"
@@ -297,18 +297,18 @@ const ExpenseForm = ({ expense, employees, onClose, onSuccess }) => {
                 rows="3"
                 maxLength="1000"
               />
-              {errors.notes && <span className="field-error">{errors.notes}</span>}
-              <div className="char-count">
+              {errors.notes && <span className="expense-field-error">{errors.notes}</span>}
+              <div className="expense-char-count">
                 {formData.notes.length}/1000 characters
               </div>
             </div>
           </div>
 
-          <div className="form-actions">
-            <button type="button" className="cancel-btn" onClick={onClose}>
+          <div className="expense-form-actions">
+            <button type="button" className="expense-form-btn secondary" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="submit-btn" disabled={loading}>
+            <button type="submit" className="expense-form-btn primary" disabled={loading}>
               {loading ? 'Saving...' : (expense ? 'Update Expense' : 'Add Expense')}
             </button>
           </div>

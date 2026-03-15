@@ -208,24 +208,24 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <div className="modal-header">
+    <div className="employee-modal-overlay">
+      <div className="employee-modal-content">
+        <div className="employee-modal-header">
           <h2>{employee ? 'Edit Employee' : 'Add New Employee'}</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button className="employee-close-btn" onClick={onClose}>×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="employee-form">
           {errors.submit && (
-            <div className="error-message">
+            <div className="employee-error-message">
               {errors.submit}
             </div>
           )}
 
-          <div className="form-section">
+          <div className="employee-form-section">
             <h3>Basic Information</h3>
-            <div className="form-row">
-              <div className="form-group">
+            <div className="employee-form-row">
+              <div className="employee-form-group">
                 <label htmlFor="employeeId">Employee ID *</label>
                 <input
                   type="text"
@@ -236,10 +236,10 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   className={errors.employeeId ? 'error' : ''}
                   placeholder="e.g., EMP001"
                 />
-                {errors.employeeId && <span className="field-error">{errors.employeeId}</span>}
+                {errors.employeeId && <span className="employee-field-error">{errors.employeeId}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="employee-form-group">
                 <label htmlFor="name">Full Name *</label>
                 <input
                   type="text"
@@ -250,12 +250,12 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   className={errors.name ? 'error' : ''}
                   placeholder="Employee full name"
                 />
-                {errors.name && <span className="field-error">{errors.name}</span>}
+                {errors.name && <span className="employee-field-error">{errors.name}</span>}
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
+            <div className="employee-form-row">
+              <div className="employee-form-group">
                 <label htmlFor="position">Position *</label>
                 <input
                   type="text"
@@ -266,10 +266,10 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   className={errors.position ? 'error' : ''}
                   placeholder="Job title/position"
                 />
-                {errors.position && <span className="field-error">{errors.position}</span>}
+                {errors.position && <span className="employee-field-error">{errors.position}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="employee-form-group">
                 <label htmlFor="dateOfEmployment">Date of Employment</label>
                 <input
                   type="date"
@@ -283,8 +283,8 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
 
             {/* Login Credentials - Only show when creating new employee */}
             {!employee && (
-              <div className="form-row">
-                <div className="form-group">
+              <div className="employee-form-row">
+                <div className="employee-form-group">
                   <label htmlFor="email">Login Email *</label>
                   <input
                     type="email"
@@ -295,11 +295,11 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                     className={errors.email ? 'error' : ''}
                     placeholder="employee@company.com"
                   />
-                  {errors.email && <span className="field-error">{errors.email}</span>}
-                  <small className="field-help">This email will be used as the username for login</small>
+                  {errors.email && <span className="employee-field-error">{errors.email}</span>}
+                  <small className="employee-field-help">This email will be used as the username for login</small>
                 </div>
 
-                <div className="form-group">
+                <div className="employee-form-group">
                   <label htmlFor="password">Login Password *</label>
                   <input
                     type="password"
@@ -311,17 +311,17 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                     placeholder="Minimum 6 characters"
                     minLength="6"
                   />
-                  {errors.password && <span className="field-error">{errors.password}</span>}
-                  <small className="field-help">Set the initial password for the employee</small>
+                  {errors.password && <span className="employee-field-error">{errors.password}</span>}
+                  <small className="employee-field-help">Set the initial password for the employee</small>
                 </div>
               </div>
             )}
           </div>
 
-          <div className="form-section">
+          <div className="employee-form-section">
             <h3>Pay Rates</h3>
-            <div className="form-row">
-              <div className="form-group">
+            <div className="employee-form-row">
+              <div className="employee-form-group">
                 <label htmlFor="payRate">Regular Pay Rate (LKR/hour) *</label>
                 <input
                   type="number"
@@ -334,10 +334,10 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   min="0"
                   placeholder="0.00"
                 />
-                {errors.payRate && <span className="field-error">{errors.payRate}</span>}
+                {errors.payRate && <span className="employee-field-error">{errors.payRate}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="employee-form-group">
                 <label htmlFor="otRate">Overtime Rate (LKR/hour) *</label>
                 <input
                   type="number"
@@ -350,10 +350,10 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   min="0"
                   placeholder="0.00"
                 />
-                {errors.otRate && <span className="field-error">{errors.otRate}</span>}
+                {errors.otRate && <span className="employee-field-error">{errors.otRate}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="employee-form-group">
                 <label htmlFor="vacationPayRate">Vacation Pay Rate (LKR/hour) *</label>
                 <input
                   type="number"
@@ -366,15 +366,15 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   min="0"
                   placeholder="0.00"
                 />
-                {errors.vacationPayRate && <span className="field-error">{errors.vacationPayRate}</span>}
+                {errors.vacationPayRate && <span className="employee-field-error">{errors.vacationPayRate}</span>}
               </div>
             </div>
           </div>
 
-          <div className="form-section">
+          <div className="employee-form-section">
             <h3>Break Configuration</h3>
-            <div className="form-row">
-              <div className="form-group checkbox-group">
+            <div className="employee-form-row">
+              <div className="employee-form-group employee-checkbox-group">
                 <label className="checkbox-label">
                   <input
                     type="checkbox"
@@ -387,7 +387,7 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                 </label>
               </div>
 
-              <div className="form-group">
+              <div className="employee-form-group">
                 <label htmlFor="breakDuration">Break Duration (minutes)</label>
                 <input
                   type="number"
@@ -400,15 +400,15 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   max="480"
                   placeholder="0"
                 />
-                {errors.breakDuration && <span className="field-error">{errors.breakDuration}</span>}
+                {errors.breakDuration && <span className="employee-field-error">{errors.breakDuration}</span>}
               </div>
             </div>
           </div>
 
-          <div className="form-section">
+          <div className="employee-form-section">
             <h3>Personal Information (Optional)</h3>
-            <div className="form-row">
-              <div className="form-group">
+            <div className="employee-form-row">
+              <div className="employee-form-group">
                 <label htmlFor="email">Email</label>
                 <input
                   type="email"
@@ -419,10 +419,10 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   className={errors.email ? 'error' : ''}
                   placeholder="employee@company.com"
                 />
-                {errors.email && <span className="field-error">{errors.email}</span>}
+                {errors.email && <span className="employee-field-error">{errors.email}</span>}
               </div>
 
-              <div className="form-group">
+              <div className="employee-form-group">
                 <label htmlFor="phone">Phone</label>
                 <input
                   type="tel"
@@ -435,8 +435,8 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
               </div>
             </div>
 
-            <div className="form-row">
-              <div className="form-group">
+            <div className="employee-form-row">
+              <div className="employee-form-group">
                 <label htmlFor="dateOfBirth">Date of Birth (for password reset)</label>
                 <input
                   type="date"
@@ -446,12 +446,12 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
                   onChange={handleChange}
                   className={errors.dateOfBirth ? 'error' : ''}
                 />
-                {errors.dateOfBirth && <span className="field-error">{errors.dateOfBirth}</span>}
-                <small className="field-help">Required for employee password reset functionality</small>
+                {errors.dateOfBirth && <span className="employee-field-error">{errors.dateOfBirth}</span>}
+                <small className="employee-field-help">Required for employee password reset functionality</small>
               </div>
             </div>
 
-            <div className="form-group">
+            <div className="employee-form-group">
               <label htmlFor="address">Address</label>
               <textarea
                 id="address"
@@ -464,11 +464,11 @@ const EmployeeForm = ({ employee, onClose, onSuccess }) => {
             </div>
           </div>
 
-          <div className="form-actions">
-            <button type="button" className="cancel-btn" onClick={onClose}>
+          <div className="employee-form-actions">
+            <button type="button" className="employee-form-btn secondary" onClick={onClose}>
               Cancel
             </button>
-            <button type="submit" className="submit-btn" disabled={loading}>
+            <button type="submit" className="employee-form-btn primary" disabled={loading}>
               {loading ? 'Saving...' : (employee ? 'Update Employee' : 'Add Employee')}
             </button>
           </div>

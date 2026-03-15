@@ -1,4 +1,4 @@
-.modal-overlay {
+.expense-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -23,7 +23,7 @@
   }
 }
 
-.modal-content {
+.expense-modal-content {
   background: var(--bg-secondary);
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
@@ -49,7 +49,7 @@
   }
 }
 
-.modal-header {
+.expense-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -62,7 +62,7 @@
   transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.modal-header h2 {
+.expense-modal-header h2 {
   color: var(--text-primary);
   font-size: 1.75rem;
   font-weight: 700;
@@ -71,7 +71,7 @@
   transition: color 0.3s ease;
 }
 
-.close-btn {
+.expense-close-btn {
   background: var(--bg-tertiary);
   border: none;
   font-size: 1.75rem;
@@ -88,7 +88,7 @@
   line-height: 1;
 }
 
-.close-btn:hover {
+.expense-close-btn:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
   transform: rotate(90deg);
@@ -102,13 +102,13 @@
 }
 
 /* Form Sections - Better Structure */
-.form-section {
+.expense-form-section {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-.form-section h3 {
+.expense-form-section h3 {
   color: var(--text-primary);
   font-size: 1.25rem;
   font-weight: 700;
@@ -122,20 +122,20 @@
 }
 
 /* Form Rows - Better Grid */
-.form-row {
+.expense-form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 24px;
   align-items: start;
 }
 
-.form-group {
+.expense-form-group {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.form-group label {
+.expense-form-group label {
   color: var(--text-primary);
   font-weight: 600;
   font-size: 0.9rem;
@@ -145,7 +145,7 @@
   gap: 6px;
 }
 
-.form-group label::after {
+.expense-form-group label::after {
   content: '*';
   color: var(--color-danger);
   margin-left: 4px;
@@ -153,15 +153,15 @@
   transition: opacity 0.3s ease;
 }
 
-.form-group:has(input[required]) label::after,
-.form-group:has(select[required]) label::after,
-.form-group:has(textarea[required]) label::after {
+.expense-form-group:has(input[required]) label::after,
+.expense-form-group:has(select[required]) label::after,
+.expense-form-group:has(textarea[required]) label::after {
   opacity: 1;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.expense-form-group input,
+.expense-form-group select,
+.expense-form-group textarea {
   padding: 14px 18px;
   border: 2px solid var(--border-color);
   border-radius: 12px;
@@ -174,29 +174,29 @@
   font-weight: 500;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.expense-form-group input:focus,
+.expense-form-group select:focus,
+.expense-form-group textarea:focus {
   outline: none;
-  border-color: var(--color-teal);
+  border-color: var(--color-teal, var(--color-primary));
   box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.1);
   background: var(--bg-secondary);
 }
 
-.form-group textarea {
+.expense-form-group textarea {
   min-height: 120px;
   resize: vertical;
   font-family: inherit;
 }
 
-.form-group input.error,
-.form-group select.error,
-.form-group textarea.error {
+.expense-form-group input.error,
+.expense-form-group select.error,
+.expense-form-group textarea.error {
   border-color: var(--color-danger);
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
-.field-error {
+.expense-field-error {
   color: var(--color-danger-text);
   font-size: 0.85rem;
   margin-top: 4px;
@@ -206,37 +206,37 @@
   font-weight: 500;
 }
 
-.field-help {
+.expense-field-help {
   color: var(--text-secondary);
   font-size: 0.85rem;
   margin-top: 4px;
   transition: color 0.3s ease;
 }
 
-.checkbox-group {
+.expense-checkbox-group {
   flex-direction: row;
   align-items: center;
   gap: 12px;
 }
 
-.checkbox-group input[type="checkbox"] {
+.expense-checkbox-group input[type="checkbox"] {
   width: auto;
   margin: 0;
   cursor: pointer;
 }
 
-.checkbox-group label {
+.expense-checkbox-group label {
   margin: 0;
   cursor: pointer;
   font-weight: 500;
 }
 
-.checkbox-group label::after {
+.expense-checkbox-group label::after {
   display: none;
 }
 
 /* Form Actions - Better Layout */
-.form-actions {
+.expense-form-actions {
   display: flex;
   gap: 16px;
   justify-content: flex-end;
@@ -246,7 +246,7 @@
   flex-wrap: wrap;
 }
 
-.form-btn {
+.expense-form-btn {
   padding: 14px 28px;
   border: none;
   border-radius: 12px;
@@ -261,37 +261,37 @@
   gap: 8px;
 }
 
-.form-btn.primary {
-  background: var(--color-teal);
+.expense-form-btn.primary {
+  background: var(--color-teal, var(--color-primary));
   color: white;
   box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
 }
 
-.form-btn.primary:hover:not(:disabled) {
+.expense-form-btn.primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(20, 184, 166, 0.4);
-  background: var(--color-teal-light);
+  background: var(--color-teal-light, var(--color-primary-dark));
 }
 
-.form-btn.secondary {
+.expense-form-btn.secondary {
   background: var(--bg-tertiary);
   color: var(--text-primary);
   border: 2px solid var(--border-color);
 }
 
-.form-btn.secondary:hover {
+.expense-form-btn.secondary:hover {
   background: var(--bg-hover);
-  border-color: var(--color-teal);
+  border-color: var(--color-teal, var(--color-primary));
   transform: translateY(-1px);
 }
 
-.form-btn:disabled {
+.expense-form-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
-.error-message {
+.expense-error-message {
   background: var(--color-danger-bg);
   color: var(--color-danger-text);
   padding: 16px 20px;
@@ -305,23 +305,29 @@
   transition: all 0.3s ease;
 }
 
+.expense-char-count {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-align: right;
+}
+
 /* Responsive Form */
 @media (max-width: 768px) {
-  .modal-overlay {
+  .expense-modal-overlay {
     padding: 12px;
   }
 
-  .modal-content {
+  .expense-modal-content {
     max-width: 100%;
     max-height: 95vh;
     border-radius: 16px;
   }
 
-  .modal-header {
+  .expense-modal-header {
     padding: 20px 24px;
   }
 
-  .modal-header h2 {
+  .expense-modal-header h2 {
     font-size: 1.5rem;
   }
 
@@ -330,31 +336,31 @@
     gap: 24px;
   }
 
-  .form-section {
+  .expense-form-section {
     gap: 20px;
   }
 
-  .form-row {
+  .expense-form-row {
     grid-template-columns: 1fr;
     gap: 20px;
   }
 
-  .form-actions {
+  .expense-form-actions {
     flex-direction: column-reverse;
     gap: 12px;
   }
 
-  .form-btn {
+  .expense-form-btn {
     width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .modal-header {
+  .expense-modal-header {
     padding: 16px 20px;
   }
 
-  .modal-header h2 {
+  .expense-modal-header h2 {
     font-size: 1.25rem;
   }
 
@@ -363,13 +369,13 @@
     gap: 20px;
   }
 
-  .form-section {
+  .expense-form-section {
     gap: 18px;
   }
 
-  .form-group input,
-  .form-group select,
-  .form-group textarea {
+  .expense-form-group input,
+  .expense-form-group select,
+  .expense-form-group textarea {
     padding: 12px 16px;
     font-size: 0.95rem;
   }
