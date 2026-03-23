@@ -1,14 +1,57 @@
 services:
-  backend:
-    image: chamara133/emprole-backend
+  api-gateway:
+    build:
+      context: ./backend/services/gateway-service
     ports:
       - "5002:5002"
     env_file:
       - ./backend/.env
+    environment:
+      PORT: 5002
+      AUTH_SERVICE_URL: http://auth-service:5003
+      WORKFORCE_SERVICE_URL: http://workforce-service:5004
+      FINANCE_SERVICE_URL: http://finance-service:5005
+    depends_on:
+      - auth-service
+      - workforce-service
+      - finance-service
+
+  auth-service:
+    build:
+      context: ./backend/services/auth-service
+    ports:
+      - "5003:5003"
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 5003
+
+  workforce-service:
+    build:
+      context: ./backend/services/workforce-service
+    ports:
+      - "5004:5004"
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 5004
+
+  finance-service:
+    build:
+      context: ./backend/services/finance-service
+    ports:
+      - "5005:5005"
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 5005
 
   frontend:
-    image: chamara133/emprole-frontend
+    build:
+      context: ./frontend
     ports:
       - "80:5001"
     env_file:
       - ./frontend/.env
+    depends_on:
+      - api-gateway
