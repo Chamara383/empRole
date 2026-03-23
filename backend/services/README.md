@@ -8,6 +8,7 @@ This folder contains standalone backend services extracted from the monolith.
 - `auth-service` (port `5003`): Auth, password reset, and user management.
 - `workforce-service` (port `5004`): Employees and timesheets.
 - `finance-service` (port `5005`): Expenses and reports.
+- `shared`: Reusable backend modules (db connector, CORS helper, and middleware factories).
 
 ## Start with Docker Compose
 
