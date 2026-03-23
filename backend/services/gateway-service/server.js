@@ -1,16 +1,16 @@
-const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const createCorsOptions = require('../shared/cors');
+const {
+  createServiceApp,
+  registerHealthRoute,
+  registerDefaultHandlers,
+} = require('../shared/expressApp');
 
 dotenv.config();
 
-const app = express();
 const corsOptions = createCorsOptions();
-
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+const app = createServiceApp({ corsOptions, parseBody: false });
 
 const targets = {
   auth: process.env.AUTH_SERVICE_URL || 'http://localhost:5003',
@@ -45,26 +45,15 @@ app.use(routeProxy('/api/timesheets', targets.workforce));
 app.use(routeProxy('/api/expenses', targets.finance));
 app.use(routeProxy('/api/reports', targets.finance));
 
-app.get('/api/health', (req, res) => {
-  res.json({
-    message: 'Labor Grid Gateway is running',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
-    service: 'gateway',
-    targets,
-  });
+registerHealthRoute(app, {
+  message: 'Labor Grid Gateway is running',
+  service: 'gateway',
+  extra: { targets },
 });
 
-app.use((err, req, res, next) => {
-  console.error('Gateway error:', err);
-  res.status(500).json({
-    message: 'Gateway error',
-    ...(process.env.NODE_ENV === 'development' && { error: err.message }),
-  });
-});
-
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+registerDefaultHandlers(app, {
+  logLabel: 'Gateway',
+  errorMessage: 'Gateway error',
 });
 
 const PORT = process.env.PORT || 5002;

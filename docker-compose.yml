@@ -1,7 +1,8 @@
 services:
   api-gateway:
     build:
-      context: ./backend/services/gateway-service
+      context: ./backend/services
+      dockerfile: gateway-service/Dockerfile
     ports:
       - "5002:5002"
     env_file:
@@ -18,7 +19,8 @@ services:
 
   auth-service:
     build:
-      context: ./backend/services/auth-service
+      context: ./backend/services
+      dockerfile: auth-service/Dockerfile
     ports:
       - "5003:5003"
     env_file:
@@ -28,7 +30,8 @@ services:
 
   workforce-service:
     build:
-      context: ./backend/services/workforce-service
+      context: ./backend/services
+      dockerfile: workforce-service/Dockerfile
     ports:
       - "5004:5004"
     env_file:
@@ -38,7 +41,8 @@ services:
 
   finance-service:
     build:
-      context: ./backend/services/finance-service
+      context: ./backend/services
+      dockerfile: finance-service/Dockerfile
     ports:
       - "5005:5005"
     env_file:
