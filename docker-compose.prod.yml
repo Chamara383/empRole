@@ -1,0 +1,52 @@
+services:
+  api-gateway:
+    image: ${DOCKERHUB_USERNAME}/emprole-api-gateway:${IMAGE_TAG:-latest}
+    ports:
+      - "5002:5002"
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 5002
+      AUTH_SERVICE_URL: http://auth-service:5003
+      WORKFORCE_SERVICE_URL: http://workforce-service:5004
+      FINANCE_SERVICE_URL: http://finance-service:5005
+    depends_on:
+      - auth-service
+      - workforce-service
+      - finance-service
+
+  auth-service:
+    image: ${DOCKERHUB_USERNAME}/emprole-auth-service:${IMAGE_TAG:-latest}
+    ports:
+      - "5003:5003"
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 5003
+
+  workforce-service:
+    image: ${DOCKERHUB_USERNAME}/emprole-workforce-service:${IMAGE_TAG:-latest}
+    ports:
+      - "5004:5004"
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 5004
+
+  finance-service:
+    image: ${DOCKERHUB_USERNAME}/emprole-finance-service:${IMAGE_TAG:-latest}
+    ports:
+      - "5005:5005"
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 5005
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME}/emprole-frontend:${IMAGE_TAG:-latest}
+    ports:
+      - "80:5001"
+    env_file:
+      - ./frontend/.env
+    depends_on:
+      - api-gateway

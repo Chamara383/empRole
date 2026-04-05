@@ -110,9 +110,14 @@ jobs:
             set -e
             cd /srv/empRole
 
+            git pull --ff-only origin main
+
+            export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
+            export IMAGE_TAG="latest"
+
             # Needed if Docker Hub repos are private
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-            docker compose pull
-            docker compose up -d --remove-orphans
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
             docker image prune -f
