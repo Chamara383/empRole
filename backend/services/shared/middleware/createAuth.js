@@ -23,8 +23,16 @@ const createAuth = (getUserById) => {
       req.user = user;
       next();
     } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        return res.status(401).json({ message: 'Session expired. Please log in again.' });
+      }
+
+      if (error.name === 'JsonWebTokenError') {
+        return res.status(401).json({ message: 'Token is not valid' });
+      }
+
       console.error('Auth middleware error:', error);
-      res.status(401).json({ message: 'Token is not valid' });
+      return res.status(401).json({ message: 'Token is not valid' });
     }
   };
 };
