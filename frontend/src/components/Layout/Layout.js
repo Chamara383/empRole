@@ -1,5 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import {
+  FiBarChart2,
+  FiChevronDown,
+  FiClock,
+  FiDollarSign,
+  FiGrid,
+  FiLogOut,
+  FiMenu,
+  FiMoon,
+  FiSun,
+  FiUser,
+  FiUserCheck,
+  FiUsers,
+  FiX,
+} from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import './Layout.css';
@@ -13,12 +28,12 @@ const Layout = ({ children }) => {
   const userMenuRef = useRef(null);
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: '🏠', roles: ['admin', 'manager', 'employee'] },
-    { name: 'Employees', href: '/employees', icon: '👥', roles: ['admin', 'manager'] },
-    { name: 'User Management', href: '/user-management', icon: '👤', roles: ['admin'] },
-    { name: 'Timesheets', href: '/timesheets', icon: '⏰', roles: ['admin', 'manager', 'employee'] },
-    { name: 'Expenses', href: '/expenses', icon: '💰', roles: ['admin', 'manager', 'employee'] },
-    { name: 'Reports', href: '/reports', icon: '📊', roles: ['admin', 'manager', 'employee'] },
+    { name: 'Dashboard', href: '/dashboard', icon: FiGrid, roles: ['admin', 'manager', 'employee'] },
+    { name: 'Employees', href: '/employees', icon: FiUsers, roles: ['admin', 'manager'] },
+    { name: 'User Management', href: '/user-management', icon: FiUserCheck, roles: ['admin'] },
+    { name: 'Timesheets', href: '/timesheets', icon: FiClock, roles: ['admin', 'manager', 'employee'] },
+    { name: 'Expenses', href: '/expenses', icon: FiDollarSign, roles: ['admin', 'manager', 'employee'] },
+    { name: 'Reports', href: '/reports', icon: FiBarChart2, roles: ['admin', 'manager', 'employee'] },
   ];
 
   const filteredNavigation = navigation.filter(item =>
@@ -64,8 +79,9 @@ const Layout = ({ children }) => {
           <button
             className="sidebar-toggle mobile-only"
             onClick={() => setSidebarOpen(false)}
+            aria-label="Close navigation"
           >
-            ×
+            <FiX />
           </button>
         </div>
 
@@ -77,7 +93,7 @@ const Layout = ({ children }) => {
               className={`nav-item ${isActive(item.href) ? 'active' : ''}`}
               onClick={() => setSidebarOpen(false)}
             >
-              <span className="nav-icon">{item.icon}</span>
+              <span className="nav-icon"><item.icon /></span>
               <span className="nav-text">{item.name}</span>
             </Link>
           ))}
@@ -92,8 +108,9 @@ const Layout = ({ children }) => {
             <button
               className="sidebar-toggle mobile-only"
               onClick={() => setSidebarOpen(true)}
+              aria-label="Open navigation"
             >
-              ☰
+              <FiMenu />
             </button>
             <h1 className="page-title">
               {filteredNavigation.find(item => isActive(item.href))?.name || 'Dashboard'}
@@ -107,7 +124,7 @@ const Layout = ({ children }) => {
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? '☀️' : '🌙'}
+              {theme === 'dark' ? <FiSun /> : <FiMoon />}
             </button>
 
             <div className="user-menu" ref={userMenuRef}>
@@ -122,7 +139,7 @@ const Layout = ({ children }) => {
                   <span className="user-name">{user?.username}</span>
                   <span className="user-role">{user?.role}</span>
                 </div>
-                <span className="dropdown-arrow">▼</span>
+                <span className="dropdown-arrow"><FiChevronDown /></span>
               </button>
 
               {userMenuOpen && (
@@ -132,7 +149,7 @@ const Layout = ({ children }) => {
                     className="dropdown-item"
                     onClick={() => setUserMenuOpen(false)}
                   >
-                    <span className="dropdown-icon">👤</span>
+                    <span className="dropdown-icon"><FiUser /></span>
                     Profile & Settings
                   </Link>
                   <div className="dropdown-divider"></div>
@@ -143,7 +160,7 @@ const Layout = ({ children }) => {
                       handleLogout();
                     }}
                   >
-                    <span className="dropdown-icon">🚪</span>
+                    <span className="dropdown-icon"><FiLogOut /></span>
                     Logout
                   </button>
                 </div>
@@ -176,7 +193,7 @@ const Layout = ({ children }) => {
                 className={`bottom-nav-item ${isActive(item.href) ? 'active' : ''}`}
                 onClick={() => setSidebarOpen(false)}
               >
-                <span className="bottom-nav-icon">{item.icon}</span>
+                <span className="bottom-nav-icon"><item.icon /></span>
                 <span className="bottom-nav-text">{item.name}</span>
               </Link>
             </li>

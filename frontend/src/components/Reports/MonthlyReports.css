@@ -16,8 +16,8 @@
 
 .reports-header h1 {
   color: var(--text-primary);
-  font-size: 2.25rem;
-  font-weight: 700;
+  font-size: 2.35rem;
+  font-weight: 800;
   margin: 0;
   letter-spacing: -0.5px;
   transition: color 0.3s ease;
@@ -38,7 +38,11 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .generate-btn {
@@ -54,7 +58,7 @@
 
 .generate-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
   background: #059669;
 }
 
@@ -69,24 +73,31 @@
 }
 
 .export-btn {
-  background: #8b5cf6;
+  background: var(--color-primary);
   color: white;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.3);
 }
 
 [data-theme="dark"] .export-btn {
-  background: #8b5cf6;
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+  background: var(--color-primary);
+  box-shadow: 0 6px 14px rgba(59, 130, 246, 0.38);
 }
 
 .export-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
-  background: #7c3aed;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+  background: #2563eb;
 }
 
 [data-theme="dark"] .export-btn:hover {
-  background: #a78bfa;
+  background: #60a5fa;
+}
+
+.generate-btn svg,
+.export-btn svg,
+.action-btn svg {
+  width: 1em;
+  height: 1em;
 }
 
 .error-message {
@@ -377,20 +388,21 @@
 }
 
 .action-btn {
-  background: none;
-  border: none;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   padding: 8px 12px;
   margin: 0 2px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1rem;
   transition: all 0.2s ease;
 }
 
 .action-btn.finalize:hover {
   background: var(--color-success-bg);
   color: var(--color-success);
-  transform: scale(1.1);
+  border-color: var(--color-success);
+  transform: translateY(-1px);
 }
 
 [data-theme="dark"] .action-btn.finalize:hover {

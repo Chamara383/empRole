@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FiEdit2, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { timesheetsAPI, employeesAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import TimesheetForm from './TimesheetForm';
@@ -195,7 +196,8 @@ const TimesheetList = () => {
       <div className="timesheet-header">
         <h1>Timesheet Management</h1>
         <button className="add-button" onClick={handleAddTimesheet}>
-          + Add Timesheet Entry
+          <FiPlus />
+          <span>Add Timesheet Entry</span>
         </button>
       </div>
 
@@ -333,14 +335,14 @@ const TimesheetList = () => {
                     onClick={() => handleEditTimesheet(timesheet)}
                     title="Edit Timesheet"
                   >
-                    ✏️
+                    <FiEdit2 />
                   </button>
                   <button
                     className="action-btn delete"
                     onClick={() => handleDeleteTimesheet(timesheet._id)}
                     title="Delete Timesheet"
                   >
-                    🗑️
+                    <FiTrash2 />
                   </button>
                 </td>
               </tr>

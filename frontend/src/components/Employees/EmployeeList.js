@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FiEdit2, FiPauseCircle, FiPlayCircle, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { employeesAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import EmployeeForm from './EmployeeForm';
@@ -205,7 +206,8 @@ const EmployeeList = () => {
       <div className="employee-header">
         <h1>Employee Management</h1>
         <button className="add-button" onClick={handleAddEmployee}>
-          + Add Employee
+          <FiPlus />
+          <span>Add Employee</span>
         </button>
       </div>
 
@@ -277,7 +279,7 @@ const EmployeeList = () => {
                     onClick={() => handleEditEmployee(employee)}
                     title="Edit Employee"
                   >
-                    ✏️
+                    <FiEdit2 />
                   </button>
                   {(user.role === 'admin' || user.role === 'manager') && (
                     <>
@@ -287,7 +289,7 @@ const EmployeeList = () => {
                           onClick={() => handleDeactivateEmployee(employee)}
                           title="Deactivate Employee"
                         >
-                          ⏸️
+                          <FiPauseCircle />
                         </button>
                       ) : (
                         <button
@@ -295,7 +297,7 @@ const EmployeeList = () => {
                           onClick={() => handleActivateEmployee(employee)}
                           title="Activate Employee"
                         >
-                          ▶️
+                          <FiPlayCircle />
                         </button>
                       )}
                     </>
@@ -306,7 +308,7 @@ const EmployeeList = () => {
                       onClick={() => handleDeleteEmployee(employee)}
                       title="Permanently Delete Employee"
                     >
-                      🗑️
+                      <FiTrash2 />
                     </button>
                   )}
                 </td>

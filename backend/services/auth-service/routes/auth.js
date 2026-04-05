@@ -101,9 +101,11 @@ router.post('/login', [
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Update last login
-    user.lastLogin = new Date();
-    await user.save();
+    // Update last login without full document validation to avoid blocking login
+    // for older records that may not satisfy newer schema constraints.
+    await User.findByIdAndUpdate(user._id, {
+      $set: { lastLogin: new Date() }
+    });
 
     // Generate JWT
     const payload = {

@@ -1,4 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import {
+  FiCheck,
+  FiEdit2,
+  FiPlus,
+  FiSend,
+  FiTrash2,
+  FiX,
+} from 'react-icons/fi';
 import { expensesAPI, employeesAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import ExpenseForm from './ExpenseForm';
@@ -254,7 +262,8 @@ const ExpenseList = () => {
       <div className="expense-header">
         <h1>Daily Expenses Management</h1>
         <button className="add-button" onClick={handleAddExpense}>
-          + Add Expense Entry
+          <FiPlus />
+          <span>Add Expense Entry</span>
         </button>
       </div>
 
@@ -399,21 +408,21 @@ const ExpenseList = () => {
                         onClick={() => handleEditExpense(expense)}
                         title="Edit Expense"
                       >
-                        ✏️
+                        <FiEdit2 />
                       </button>
                       <button
                         className="action-btn submit"
                         onClick={() => handleSubmitExpense(expense._id)}
                         title="Submit for Approval"
                       >
-                        📤
+                        <FiSend />
                       </button>
                       <button
                         className="action-btn delete"
                         onClick={() => handleDeleteExpense(expense._id)}
                         title="Delete Expense"
                       >
-                        🗑️
+                        <FiTrash2 />
                       </button>
                     </>
                   )}
@@ -424,14 +433,14 @@ const ExpenseList = () => {
                         onClick={() => handleApproveExpense(expense._id)}
                         title="Approve Expense"
                       >
-                        ✓
+                        <FiCheck />
                       </button>
                       <button
                         className="action-btn reject"
                         onClick={() => handleRejectExpense(expense._id)}
                         title="Reject Expense"
                       >
-                        ✗
+                        <FiX />
                       </button>
                     </>
                   )}
@@ -441,7 +450,7 @@ const ExpenseList = () => {
                       onClick={() => handleEditExpense(expense)}
                       title="Edit Expense"
                     >
-                      ✏️
+                      <FiEdit2 />
                     </button>
                   )}
                 </td>

@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  FiBarChart2,
+  FiClipboard,
+  FiFileText,
+  FiList,
+  FiPlus,
+  FiUserCheck,
+  FiUsers,
+} from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import { employeesAPI, timesheetsAPI, reportsAPI } from '../../services/api';
 import './Dashboard.css';
@@ -132,7 +141,7 @@ const Dashboard = () => {
         {(user.role === 'admin' || user.role === 'manager') && (
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-icon">👥</div>
+              <div className="stat-icon"><FiUsers /></div>
               <div className="stat-content">
                 <h3>{stats.totalEmployees}</h3>
                 <p>Total Employees</p>
@@ -140,7 +149,7 @@ const Dashboard = () => {
             </div>
             
             <div className="stat-card">
-              <div className="stat-icon">📊</div>
+              <div className="stat-icon"><FiBarChart2 /></div>
               <div className="stat-content">
                 <h3>{stats.recentTimesheets.length}</h3>
                 <p>Recent Entries</p>
@@ -212,18 +221,21 @@ const Dashboard = () => {
                   className="action-btn primary"
                   onClick={() => navigate('/timesheets')}
                 >
+                  <span className="action-btn-icon"><FiPlus /></span>
                   Add Timesheet Entry
                 </button>
                 <button 
                   className="action-btn secondary"
                   onClick={() => navigate('/timesheets')}
                 >
+                  <span className="action-btn-icon"><FiList /></span>
                   View All Timesheets
                 </button>
                 <button 
                   className="action-btn secondary"
                   onClick={() => navigate('/reports')}
                 >
+                  <span className="action-btn-icon"><FiFileText /></span>
                   Generate Reports
                 </button>
               </>
@@ -233,6 +245,7 @@ const Dashboard = () => {
                 className="action-btn secondary"
                 onClick={() => navigate('/employees')}
               >
+                <span className="action-btn-icon"><FiUsers /></span>
                 Manage Employees
               </button>
             )}
@@ -242,6 +255,7 @@ const Dashboard = () => {
                   className="action-btn secondary"
                   onClick={() => navigate('/user-management')}
                 >
+                  <span className="action-btn-icon"><FiUserCheck /></span>
                   Manage Users
                 </button>
               </>
@@ -251,6 +265,7 @@ const Dashboard = () => {
                 className="action-btn primary"
                 onClick={() => navigate('/timesheets')}
               >
+                <span className="action-btn-icon"><FiClipboard /></span>
                 View My Timesheets
               </button>
             )}
