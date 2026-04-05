@@ -45,16 +45,49 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build and push backend
+      - name: Build and push API gateway
         uses: docker/build-push-action@v5
         with:
-          context: ./backend
-          file: ./backend/Dockerfile
+          context: ./backend/services
+          file: ./backend/services/gateway-service/Dockerfile
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-backend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-backend:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-api-gateway:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-api-gateway:${{ github.sha }}
+
+      - name: Build and push auth service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/services
+          file: ./backend/services/auth-service/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-auth-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-auth-service:${{ github.sha }}
+
+      - name: Build and push workforce service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/services
+          file: ./backend/services/workforce-service/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-workforce-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-workforce-service:${{ github.sha }}
+
+      - name: Build and push finance service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/services
+          file: ./backend/services/finance-service/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-finance-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-finance-service:${{ github.sha }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
