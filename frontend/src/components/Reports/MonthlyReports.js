@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FiCheck, FiDownload, FiRefreshCw } from 'react-icons/fi';
 import { reportsAPI, employeesAPI } from '../../services/api';
 import './MonthlyReports.css';
 
@@ -176,13 +177,15 @@ const MonthlyReports = () => {
             onClick={handleGenerateReports}
             disabled={generating}
           >
-            {generating ? 'Generating...' : 'Generate Reports'}
+            <FiRefreshCw />
+            <span>{generating ? 'Generating...' : 'Generate Reports'}</span>
           </button>
           <button 
             className="export-btn" 
             onClick={handleExportReport}
           >
-            Export CSV
+            <FiDownload />
+            <span>Export CSV</span>
           </button>
         </div>
       </div>
@@ -323,7 +326,7 @@ const MonthlyReports = () => {
                       onClick={() => handleFinalizeReport(report._id)}
                       title="Finalize Report"
                     >
-                      ✓
+                      <FiCheck />
                     </button>
                   )}
                 </td>
@@ -340,7 +343,8 @@ const MonthlyReports = () => {
               onClick={handleGenerateReports}
               disabled={generating}
             >
-              {generating ? 'Generating...' : 'Generate Reports'}
+              <FiRefreshCw />
+              <span>{generating ? 'Generating...' : 'Generate Reports'}</span>
             </button>
           </div>
         )}

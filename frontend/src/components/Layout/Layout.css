@@ -16,6 +16,7 @@
   z-index: 1000;
   transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   overflow-y: auto;
+  border-right: 1px solid var(--border-color);
 }
 
 .sidebar.open {
@@ -24,7 +25,7 @@
 
 .sidebar-header {
   padding: 24px 20px;
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -51,14 +52,17 @@
 }
 
 .sidebar-toggle {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  font-size: 1.1rem;
   color: var(--text-secondary);
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
+  padding: 7px;
+  border-radius: 8px;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar-toggle:hover {
@@ -90,11 +94,11 @@
 }
 
 .nav-item.active {
-  background: rgba(20, 184, 166, 0.15);
-  color: var(--color-teal-light);
-  border-left-color: var(--color-teal);
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--color-primary);
+  border-left-color: var(--color-primary);
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.2);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
 .nav-item.active .nav-icon {
@@ -102,7 +106,7 @@
 }
 
 .nav-icon {
-  font-size: 1.35rem;
+  font-size: 1.1rem;
   width: 24px;
   text-align: center;
   transition: transform 0.2s ease;
@@ -110,6 +114,16 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.nav-icon svg,
+.bottom-nav-icon svg,
+.theme-toggle svg,
+.dropdown-icon svg,
+.dropdown-arrow svg,
+.sidebar-toggle svg {
+  width: 1em;
+  height: 1em;
 }
 
 .nav-text {
@@ -143,7 +157,7 @@
   top: 0;
   z-index: 100;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  border-bottom: 2px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
 }
 
@@ -155,8 +169,8 @@
 
 .page-title {
   color: var(--text-primary);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.35rem;
+  font-weight: 800;
   margin: 0;
   letter-spacing: -0.5px;
   transition: color 0.3s ease;
@@ -179,8 +193,8 @@
   background: var(--bg-tertiary);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 1.2rem;
+  padding: 8px;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -192,7 +206,8 @@
 
 .theme-toggle:hover {
   background: var(--bg-hover);
-  transform: scale(1.05);
+  transform: translateY(-1px);
+  border-color: var(--color-primary);
 }
 
 .user-menu {
@@ -226,7 +241,7 @@
   color: white;
   font-weight: 600;
   font-size: 1.1rem;
-  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.24);
 }
 
 .user-info {
@@ -252,8 +267,10 @@
 
 .dropdown-arrow {
   color: var(--text-secondary);
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   transition: transform 0.2s ease, color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
 }
 
 .user-info-btn:hover .dropdown-arrow {
@@ -299,6 +316,9 @@
   font-size: 1rem;
   width: 16px;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dropdown-divider {
@@ -417,18 +437,18 @@
 }
 
 .bottom-nav-item.active {
-  background: rgba(102, 126, 234, 0.2);
+  background: rgba(37, 99, 235, 0.16);
   color: var(--color-primary);
   opacity: 1;
   border-radius: 16px;
   padding: 8px 12px;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.25);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
 [data-theme="dark"] .bottom-nav-item.active {
-  background: rgba(20, 184, 166, 0.2);
+  background: rgba(59, 130, 246, 0.2);
   color: var(--color-teal-light);
-  box-shadow: 0 2px 12px rgba(20, 184, 166, 0.3);
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.3);
 }
 
 .bottom-nav-item.active::after {
@@ -444,7 +464,7 @@
 }
 
 [data-theme="dark"] .bottom-nav-item.active::after {
-  background: var(--color-teal);
+  background: var(--color-primary);
 }
 
 .bottom-nav-item.active .bottom-nav-icon {
@@ -452,7 +472,7 @@
 }
 
 .bottom-nav-icon {
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
   display: flex;
   align-items: center;
@@ -464,8 +484,8 @@
 }
 
 .bottom-nav-text {
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-size: 0.68rem;
+  font-weight: 600;
   white-space: nowrap;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   display: block;
@@ -515,7 +535,7 @@
   }
 
   .page-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   .user-info {

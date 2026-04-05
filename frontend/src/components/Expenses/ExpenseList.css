@@ -20,8 +20,8 @@
 
 .expense-header h1 {
   color: var(--text-primary);
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 2.35rem;
+  font-weight: 800;
   margin: 0;
   letter-spacing: -0.75px;
   transition: color 0.3s ease;
@@ -29,7 +29,7 @@
 }
 
 .add-button {
-  background: var(--color-teal);
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 14px 28px;
@@ -38,7 +38,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -47,8 +47,8 @@
 
 .add-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.4);
-  background: var(--color-teal-light);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.34);
+  background: #2563eb;
 }
 
 .error-message {
@@ -110,8 +110,8 @@
 .filter-input:focus,
 .filter-select:focus {
   outline: none;
-  border-color: var(--color-teal);
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   background: var(--bg-secondary);
 }
 
@@ -186,7 +186,7 @@
 .employee-name-link {
   background: none;
   border: none;
-  color: var(--color-teal);
+  color: var(--color-primary);
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
@@ -199,8 +199,8 @@
 }
 
 .employee-name-link:hover {
-  color: var(--color-teal-light);
-  background: rgba(20, 184, 166, 0.1);
+  color: var(--color-primary-dark);
+  background: rgba(37, 99, 235, 0.12);
   text-decoration: none;
 }
 
@@ -355,13 +355,13 @@
 }
 
 .action-btn {
-  background: none;
-  border: none;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   padding: 10px 12px;
   margin: 0 4px;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1rem;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
@@ -370,29 +370,39 @@
   height: 36px;
 }
 
+.action-btn svg {
+  width: 1em;
+  height: 1em;
+}
+
 .action-btn.edit:hover {
-  background: var(--color-info-bg);
-  transform: scale(1.1);
+  background: rgba(37, 99, 235, 0.16);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
 }
 
 .action-btn.delete:hover {
   background: var(--color-danger-bg);
-  transform: scale(1.1);
+  border-color: var(--color-danger);
+  transform: translateY(-1px);
 }
 
 .action-btn.submit:hover {
   background: var(--color-info-bg);
-  transform: scale(1.1);
+  border-color: var(--color-info);
+  transform: translateY(-1px);
 }
 
 .action-btn.approve:hover {
   background: var(--color-success-bg);
-  transform: scale(1.1);
+  border-color: var(--color-success);
+  transform: translateY(-1px);
 }
 
 .action-btn.reject:hover {
   background: var(--color-danger-bg);
-  transform: scale(1.1);
+  border-color: var(--color-danger);
+  transform: translateY(-1px);
 }
 
 .no-data {

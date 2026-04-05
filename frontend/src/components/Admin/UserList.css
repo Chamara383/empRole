@@ -18,8 +18,8 @@
 
 .user-header h1 {
   color: var(--text-primary);
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 2.35rem;
+  font-weight: 800;
   margin: 0;
   letter-spacing: -0.75px;
   transition: color 0.3s ease;
@@ -27,7 +27,7 @@
 }
 
 .add-button {
-  background: var(--color-teal);
+  background: var(--color-primary);
   color: white;
   border: none;
   padding: 14px 28px;
@@ -36,7 +36,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -45,28 +45,28 @@
 
 .add-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.4);
-  background: var(--color-teal-light);
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.34);
+  background: #2563eb;
 }
 
 .error-message {
-  background: #fee;
-  color: #c33;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-  border: 1px solid #fcc;
+  background: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+  border: 1px solid var(--color-danger);
 }
 
 .success-message {
-  background: #efe;
-  color: #2e7d32;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  font-size: 0.9rem;
-  border: 1px solid #c8e6c9;
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+  border: 1px solid var(--color-success);
 }
 
 .filters {
@@ -100,8 +100,8 @@
 
 .search-input:focus {
   outline: none;
-  border-color: var(--color-teal);
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .role-filter {
@@ -122,8 +122,8 @@
 
 .filter-select:focus {
   outline: none;
-  border-color: var(--color-teal);
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 
 .user-table-container {
@@ -182,11 +182,11 @@
 
 .user-username {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .user-email {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -202,18 +202,18 @@
 
 .employee-id {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   font-size: 0.85rem;
 }
 
 .employee-name {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.8rem;
   font-style: italic;
 }
 
 .no-employee {
-  color: #999;
+  color: var(--text-tertiary);
   font-style: italic;
 }
 
@@ -227,18 +227,18 @@
 }
 
 .role-badge.admin {
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text);
 }
 
 .role-badge.manager {
-  background-color: #ffc107;
-  color: #212529;
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
 }
 
 .role-badge.employee {
-  background-color: #28a745;
-  color: white;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
 }
 
 .status-badge {
@@ -250,18 +250,18 @@
 }
 
 .status-active {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
 }
 
 .status-inactive {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text);
 }
 
 .user-created,
 .user-last-login {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -272,13 +272,13 @@
 }
 
 .action-btn {
-  background: white;
-  border: 1px solid #e1e5e9;
-  color: #666;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
   padding: 6px 8px;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1rem;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
@@ -287,8 +287,14 @@
   height: 32px;
 }
 
+.action-btn svg,
+.add-button svg {
+  width: 1em;
+  height: 1em;
+}
+
 .action-btn:hover:not(:disabled) {
-  transform: scale(1.1);
+  transform: translateY(-1px);
 }
 
 .action-btn:disabled {
@@ -297,45 +303,45 @@
 }
 
 .action-btn.edit {
-  color: #007bff;
-  border-color: #b3d9ff;
+  color: var(--color-primary);
+  border-color: rgba(37, 99, 235, 0.3);
 }
 
 .action-btn.edit:hover:not(:disabled) {
-  background: #e3f2fd;
+  background: rgba(37, 99, 235, 0.14);
 }
 
 .action-btn.deactivate {
-  color: #f57c00;
-  border-color: #ffb74d;
+  color: var(--color-warning);
+  border-color: rgba(217, 119, 6, 0.35);
 }
 
 .action-btn.deactivate:hover:not(:disabled) {
-  background: #fff3e0;
+  background: var(--color-warning-bg);
 }
 
 .action-btn.activate {
-  color: #2e7d32;
-  border-color: #81c784;
+  color: var(--color-success);
+  border-color: rgba(21, 128, 61, 0.3);
 }
 
 .action-btn.activate:hover:not(:disabled) {
-  background: #e8f5e8;
+  background: var(--color-success-bg);
 }
 
 .action-btn.delete {
-  color: #dc3545;
-  border-color: #f5c6cb;
+  color: var(--color-danger);
+  border-color: rgba(220, 38, 38, 0.3);
 }
 
 .action-btn.delete:hover:not(:disabled) {
-  background: #ffebee;
+  background: var(--color-danger-bg);
 }
 
 .no-data {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
@@ -366,10 +372,10 @@
 }
 
 .page-btn:hover:not(:disabled) {
-  border-color: var(--color-teal);
+  border-color: var(--color-primary);
   background: var(--bg-hover);
   transform: translateY(-1px);
-  color: var(--color-teal-light);
+  color: var(--color-primary);
 }
 
 .page-btn:disabled {
@@ -389,7 +395,7 @@
 
 .loading {
   text-align: center;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1rem;
   padding: 40px;
 }
@@ -401,7 +407,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(15, 23, 42, 0.42);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -409,9 +415,10 @@
 }
 
 .modal-content {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
   width: 90%;
   max-width: 500px;
   max-height: 90vh;
@@ -423,21 +430,21 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e1e5e9;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .modal-header h2 {
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1.5rem;
 }
 
 .close-btn {
-  background: none;
-  border: none;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   font-size: 1.5rem;
   cursor: pointer;
-  color: #666;
+  color: var(--text-secondary);
   padding: 0;
   width: 30px;
   height: 30px;
@@ -448,7 +455,8 @@
 }
 
 .close-btn:hover {
-  background: #f8f9fa;
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
 .user-form {
@@ -463,23 +471,25 @@
   display: block;
   margin-bottom: 6px;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
   padding: 10px 12px;
-  border: 2px solid #e1e5e9;
-  border-radius: 6px;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
   font-size: 0.9rem;
   transition: border-color 0.2s ease;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--color-primary);
 }
 
 .checkbox-group {
@@ -505,7 +515,7 @@
   justify-content: flex-end;
   margin-top: 30px;
   padding-top: 20px;
-  border-top: 1px solid #e1e5e9;
+  border-top: 1px solid var(--border-color);
 }
 
 .btn {
@@ -519,22 +529,22 @@
 }
 
 .btn-secondary {
-  background: #f8f9fa;
-  color: #333;
-  border: 1px solid #e1e5e9;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
 }
 
 .btn-secondary:hover {
-  background: #e9ecef;
+  background: var(--bg-hover);
 }
 
 .btn-primary {
-  background: #667eea;
+  background: var(--color-primary);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #5a6fd8;
+  background: #2563eb;
 }
 
 .btn:disabled {

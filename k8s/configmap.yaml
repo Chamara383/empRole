@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: emprole-config
+  namespace: emprole
+data:
+  NODE_ENV: "production"
+  AUTH_SERVICE_URL: "http://auth-service:5003"
+  WORKFORCE_SERVICE_URL: "http://workforce-service:5004"
+  FINANCE_SERVICE_URL: "http://finance-service:5005"
+  REACT_APP_API_URL: "/api"

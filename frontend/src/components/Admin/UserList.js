@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { FiEdit2, FiPauseCircle, FiPlayCircle, FiPlus, FiTrash2 } from 'react-icons/fi';
 import { userManagementAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import './UserList.css';
@@ -223,7 +224,8 @@ const UserList = () => {
       <div className="user-header">
         <h1>User Management</h1>
         <button className="add-button" onClick={handleAddUser}>
-          + Add User
+          <FiPlus />
+          <span>Add User</span>
         </button>
       </div>
 
@@ -312,7 +314,7 @@ const UserList = () => {
                     onClick={() => handleEditUser(user)}
                     title="Edit User"
                   >
-                    ✏️
+                    <FiEdit2 />
                   </button>
                   <button
                     className={`action-btn ${user.isActive ? 'deactivate' : 'activate'}`}
@@ -320,7 +322,7 @@ const UserList = () => {
                     title={user.isActive ? 'Deactivate User' : 'Activate User'}
                     disabled={user._id === currentUser.id}
                   >
-                    {user.isActive ? '⏸️' : '▶️'}
+                    {user.isActive ? <FiPauseCircle /> : <FiPlayCircle />}
                   </button>
                   <button
                     className="action-btn delete"
@@ -328,7 +330,7 @@ const UserList = () => {
                     title="Delete User"
                     disabled={user._id === currentUser.id}
                   >
-                    🗑️
+                    <FiTrash2 />
                   </button>
                 </td>
               </tr>

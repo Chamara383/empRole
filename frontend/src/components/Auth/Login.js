@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FiBriefcase, FiLogIn } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
@@ -83,6 +84,9 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
+          <div className="auth-brand-icon">
+            <FiBriefcase />
+          </div>
           <h1>Labor Grid</h1>
           <p>Sign in to your account</p>
         </div>
@@ -123,7 +127,7 @@ const Login = () => {
           </div>
 
           <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? 'Signing In...' : <><FiLogIn /> <span>Sign In</span></>}
           </button>
         </form>
 
