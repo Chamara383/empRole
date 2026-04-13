@@ -118,17 +118,34 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            set -e
+            set -euo pipefail
             cd /srv/empRole
 
-            sudo git pull --ff-only origin main
+            # Keep runtime backups before forcing repo sync
+            TS="$(date +%Y%m%d-%H%M%S)"
+            BACKUP_DIR="/srv/empRole-backup/${TS}"
+            sudo mkdir -p "$BACKUP_DIR"
 
-            export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
-            export IMAGE_TAG="latest"
+            for f in frontend/.env backend/.env docker-compose.prod.yml backend/services/ml-service/employee_attrition_model.pkl; do
+              if [ -f "$f" ]; then
+                sudo cp "$f" "$BACKUP_DIR/$(basename "$f")"
+              fi
+            done
+
+            # Force server repo to exactly match main (no pull conflicts)
+            sudo git fetch origin main
+            sudo git reset --hard origin/main
+            sudo git clean -fd
+
+            # Compose variable file used automatically by docker compose
+            sudo tee .env >/dev/null <<'EOF'
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            IMAGE_TAG=latest
+            EOF
 
             # Needed if Docker Hub repos are private
-            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-            sudo docker compose -f docker-compose.prod.yml pull
-            sudo docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            sudo docker compose --env-file .env -f docker-compose.prod.yml pull
+            sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans
             sudo docker image prune -f
