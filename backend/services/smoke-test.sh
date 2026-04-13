@@ -14,7 +14,7 @@ require_cmd curl
 require_cmd docker
 
 echo "Starting services..."
-docker compose -f "$ROOT_DIR/docker-compose.yml" up -d --build api-gateway auth-service workforce-service finance-service
+docker compose -f "$ROOT_DIR/docker-compose.yml" up -d --build api-gateway auth-service workforce-service finance-service ml-service
 
 cleanup() {
   echo "Stopping services..."
@@ -45,6 +45,7 @@ wait_for_health "gateway" "http://localhost:5002/api/health"
 wait_for_health "auth" "http://localhost:5003/api/health"
 wait_for_health "workforce" "http://localhost:5004/api/health"
 wait_for_health "finance" "http://localhost:5005/api/health"
+wait_for_health "ml" "http://localhost:8000/api/health"
 
 assert_status() {
   local name="$1"
@@ -67,5 +68,6 @@ assert_status "gateway health" "http://localhost:5002/api/health" "200"
 assert_status "auth protected route" "http://localhost:5002/api/auth/me" "401"
 assert_status "workforce protected route" "http://localhost:5002/api/employees" "401"
 assert_status "finance protected route" "http://localhost:5002/api/expenses" "401"
+assert_status "ml health via gateway" "http://localhost:5002/api/attrition/health" "200"
 
 echo "All gateway smoke tests passed."

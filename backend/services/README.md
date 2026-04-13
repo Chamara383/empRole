@@ -8,6 +8,7 @@ This folder contains standalone backend services extracted from the monolith.
 - `auth-service` (port `5003`): Auth, password reset, and user management.
 - `workforce-service` (port `5004`): Employees and timesheets.
 - `finance-service` (port `5005`): Expenses and reports.
+- `ml-service` (port `8000`): Attrition prediction API (`/api/attrition/predict`).
 - `shared`: Reusable backend modules (db connector, CORS helper, and middleware factories).
 
 ## Start with Docker Compose
@@ -33,6 +34,7 @@ chmod +x backend/services/smoke-test.sh
 - Auth: `GET /api/health` on port `5003`
 - Workforce: `GET /api/health` on port `5004`
 - Finance: `GET /api/health` on port `5005`
+- ML: `GET /api/health` on port `8000`
 
 ## Notes
 

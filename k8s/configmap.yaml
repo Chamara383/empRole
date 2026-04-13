@@ -8,4 +8,5 @@ data:
   AUTH_SERVICE_URL: "http://auth-service:5003"
   WORKFORCE_SERVICE_URL: "http://workforce-service:5004"
   FINANCE_SERVICE_URL: "http://finance-service:5005"
+  ML_SERVICE_URL: "http://ml-service:8000"
   REACT_APP_API_URL: "/api"

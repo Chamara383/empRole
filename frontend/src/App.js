@@ -11,6 +11,7 @@ import TimesheetList from './components/Timesheets/TimesheetList';
 import ExpenseList from './components/Expenses/ExpenseList';
 import MonthlyReports from './components/Reports/MonthlyReports';
 import UserList from './components/Admin/UserList';
+import AttritionPrediction from './components/AttritionPrediction/AttritionPrediction';
 import Layout from './components/Layout/Layout';
 import './App.css';
 
@@ -98,6 +99,16 @@ const AppRoutes = () => {
           <ProtectedRoute>
             <Layout>
               <MonthlyReports />
+            </Layout>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/attrition-prediction" 
+        element={
+          <ProtectedRoute requiredRole={["admin", "manager"]}>
+            <Layout>
+              <AttritionPrediction />
             </Layout>
           </ProtectedRoute>
         } 

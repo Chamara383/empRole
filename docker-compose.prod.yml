@@ -10,10 +10,12 @@ services:
       AUTH_SERVICE_URL: http://auth-service:5003
       WORKFORCE_SERVICE_URL: http://workforce-service:5004
       FINANCE_SERVICE_URL: http://finance-service:5005
+      ML_SERVICE_URL: http://ml-service:8000
     depends_on:
       - auth-service
       - workforce-service
       - finance-service
+      - ml-service
 
   auth-service:
     image: ${DOCKERHUB_USERNAME}/emprole-auth-service:${IMAGE_TAG:-latest}
@@ -41,6 +43,14 @@ services:
       - ./backend/.env
     environment:
       PORT: 5005
+
+  ml-service:
+    image: ${DOCKERHUB_USERNAME}/emprole-ml-service:${IMAGE_TAG:-latest}
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: 8000
+      MODEL_PATH: /app/ml-service/employee_attrition_model.pkl
 
   frontend:
     image: ${DOCKERHUB_USERNAME}/emprole-frontend:${IMAGE_TAG:-latest}

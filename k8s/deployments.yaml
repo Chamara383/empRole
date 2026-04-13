@@ -200,6 +200,11 @@ spec:
                 configMapKeyRef:
                   name: emprole-config
                   key: FINANCE_SERVICE_URL
+            - name: ML_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: emprole-config
+                  key: ML_SERVICE_URL
           readinessProbe:
             httpGet:
               path: /api/health
@@ -210,6 +215,45 @@ spec:
             httpGet:
               path: /api/health
               port: 5002
+            initialDelaySeconds: 20
+            periodSeconds: 20
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-service
+  namespace: emprole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-service
+  template:
+    metadata:
+      labels:
+        app: ml-service
+    spec:
+      containers:
+        - name: ml-service
+          image: emprole-ml-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PORT
+              value: "8000"
+            - name: MODEL_PATH
+              value: "/app/ml-service/employee_attrition_model.pkl"
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8000
             initialDelaySeconds: 20
             periodSeconds: 20
 ---

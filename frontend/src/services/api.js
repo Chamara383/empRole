@@ -99,6 +99,12 @@ export const reportsAPI = {
     api.get(`/reports/export/${year}/${month}`, { responseType: 'blob' }),
 };
 
+// Attrition Prediction API
+export const attritionAPI = {
+  getSchema: () => api.get('/attrition/schema'),
+  predict: (payload) => api.post('/attrition/predict', payload),
+};
+
 
 // User Management API
 export const userManagementAPI = {
