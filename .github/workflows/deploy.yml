@@ -118,21 +118,11 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           timeout: 120s
-          command_timeout: 45m
+          command_timeout: 30m
           script_stop: true
           script: |
             set -euo pipefail
             cd /srv/empRole
-
-            TS="$(date +%Y%m%d-%H%M%S)"
-            BACKUP_DIR="/srv/empRole-backup/${TS}"
-            sudo mkdir -p "$BACKUP_DIR"
-
-            for f in frontend/.env backend/.env docker-compose.prod.yml backend/services/ml-service/employee_attrition_model.pkl; do
-              if [ -f "$f" ]; then
-                sudo cp "$f" "$BACKUP_DIR/$(basename "$f")"
-              fi
-            done
 
             sudo git fetch origin main
             sudo git reset --hard origin/main
@@ -145,7 +135,6 @@ jobs:
 
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-            # Pull explicitly first (can take time on EC2)
-            sudo docker compose --env-file .env -f docker-compose.prod.yml pull
-            sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans
+            # Pull and start in one step to reduce deploy fragility on EC2
+            sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans --pull always
 
