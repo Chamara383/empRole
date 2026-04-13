@@ -88,6 +88,17 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/emprole-finance-service:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/emprole-finance-service:${{ github.sha }}
+        
+      - name: Build and push ml service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend/services
+          file: ./backend/services/ml-service/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-ml-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-ml-service:${{ github.sha }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v5
@@ -118,6 +129,6 @@ jobs:
             # Needed if Docker Hub repos are private
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d --remove-orphans
-            docker image prune -f
+            sudo docker compose -f docker-compose.prod.yml pull
+            sudo docker compose -f docker-compose.prod.yml up -d --remove-orphans
+            sudo docker image prune -f
