@@ -124,10 +124,6 @@ jobs:
             set -euo pipefail
             cd /srv/empRole
 
-            sudo git fetch origin main
-            sudo git reset --hard origin/main
-            sudo git clean -fd
-
             sudo tee .env >/dev/null <<'EOF'
             DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
             IMAGE_TAG=latest
