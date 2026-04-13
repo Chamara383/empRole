@@ -16,6 +16,7 @@ const targets = {
   auth: process.env.AUTH_SERVICE_URL || 'http://localhost:5003',
   workforce: process.env.WORKFORCE_SERVICE_URL || 'http://localhost:5004',
   finance: process.env.FINANCE_SERVICE_URL || 'http://localhost:5005',
+  ml: process.env.ML_SERVICE_URL || 'http://localhost:8000',
 };
 
 const proxy = (target) => createProxyMiddleware({
@@ -44,6 +45,7 @@ app.use(routeProxy('/api/employees', targets.workforce));
 app.use(routeProxy('/api/timesheets', targets.workforce));
 app.use(routeProxy('/api/expenses', targets.finance));
 app.use(routeProxy('/api/reports', targets.finance));
+app.use(routeProxy('/api/attrition', targets.ml));
 
 registerHealthRoute(app, {
   message: 'Labor Grid Gateway is running',

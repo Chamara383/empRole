@@ -8,6 +8,7 @@ This folder contains Kubernetes manifests for the microservice architecture.
 - `configmap.yaml`: Non-sensitive environment variables.
 - `secret.example.yaml`: Secret template (copy and edit before apply).
 - `deployments.yaml`: Deployments for gateway, auth, workforce, finance, and frontend.
+ - `deployments.yaml`: Deployments for gateway, auth, workforce, finance, ml, and frontend.
 - `services.yaml`: ClusterIP services for all deployments.
 - `ingress.yaml`: Ingress routes for frontend (`/`) and API (`/api`).
 
@@ -20,6 +21,7 @@ Update image names in `deployments.yaml`:
 - `your-dockerhub-user/emprole-workforce-service:latest`
 - `your-dockerhub-user/emprole-finance-service:latest`
 - `your-dockerhub-user/emprole-frontend:latest`
+- `your-dockerhub-user/emprole-ml-service:latest`
 
 Build and push:
 
@@ -29,12 +31,14 @@ docker build -t your-dockerhub-user/emprole-api-gateway:latest -f backend/servic
 docker build -t your-dockerhub-user/emprole-auth-service:latest -f backend/services/auth-service/Dockerfile backend/services
 docker build -t your-dockerhub-user/emprole-workforce-service:latest -f backend/services/workforce-service/Dockerfile backend/services
 docker build -t your-dockerhub-user/emprole-finance-service:latest -f backend/services/finance-service/Dockerfile backend/services
+docker build -t your-dockerhub-user/emprole-ml-service:latest -f backend/services/ml-service/Dockerfile backend/services
 docker build -t your-dockerhub-user/emprole-frontend:latest -f frontend/Dockerfile frontend
 
 docker push your-dockerhub-user/emprole-api-gateway:latest
 docker push your-dockerhub-user/emprole-auth-service:latest
 docker push your-dockerhub-user/emprole-workforce-service:latest
 docker push your-dockerhub-user/emprole-finance-service:latest
+docker push your-dockerhub-user/emprole-ml-service:latest
 docker push your-dockerhub-user/emprole-frontend:latest
 ```
 

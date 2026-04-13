@@ -12,10 +12,12 @@ services:
       AUTH_SERVICE_URL: http://auth-service:5003
       WORKFORCE_SERVICE_URL: http://workforce-service:5004
       FINANCE_SERVICE_URL: http://finance-service:5005
+      ML_SERVICE_URL: http://ml-service:8000
     depends_on:
       - auth-service
       - workforce-service
       - finance-service
+      - ml-service
 
   auth-service:
     build:
@@ -49,6 +51,16 @@ services:
       - ./backend/.env
     environment:
       PORT: 5005
+
+  ml-service:
+    build:
+      context: ./backend/services
+      dockerfile: ml-service/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: 8000
+      MODEL_PATH: /app/ml-service/employee_attrition_model.pkl
 
   frontend:
     build:
