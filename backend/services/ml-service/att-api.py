@@ -32,6 +32,20 @@ def _load_artifacts(model_path: str) -> Tuple[Any, Optional[List[str]], Optional
 	if feature_columns is None and hasattr(model, "feature_names_in_"):
 		feature_columns = list(model.feature_names_in_)
 
+	# Compatibility patch for older sklearn pickles loaded with newer sklearn.
+	# Some serialized LogisticRegression estimators may miss newer attributes.
+	final_estimator = None
+	if hasattr(model, "named_steps") and isinstance(model.named_steps, dict):
+		final_estimator = model.named_steps.get("model")
+	else:
+		final_estimator = model
+
+	if getattr(final_estimator, "__class__", None) and final_estimator.__class__.__name__ == "LogisticRegression":
+		if not hasattr(final_estimator, "multi_class"):
+			setattr(final_estimator, "multi_class", "auto")
+		if not hasattr(final_estimator, "l1_ratio"):
+			setattr(final_estimator, "l1_ratio", None)
+
 	return model, feature_columns, target_classes
 
 
@@ -79,6 +93,11 @@ def schema() -> Any:
 @app.get("/api/attrition/schema")
 def api_attrition_schema() -> Any:
 	return schema()
+
+
+@app.get("/api/attrition/health")
+def api_attrition_health() -> Any:
+	return health()
 
 
 def _validate_payload(payload: Dict[str, Any]) -> Tuple[bool, str]:
@@ -129,6 +148,10 @@ def predict() -> Any:
 			pred_idx = int(pred)
 			if 0 <= pred_idx < len(TARGET_CLASSES):
 				label = TARGET_CLASSES[pred_idx]
+		elif isinstance(pred, (int, float, np.integer, np.floating)):
+			pred_idx = int(pred)
+			if pred_idx in (0, 1):
+				label = "Yes" if pred_idx == 1 else "No"
 
 		prediction_value = _to_native(pred)
 		label_value = _to_native(label)
@@ -153,4 +176,5 @@ def api_attrition_predict() -> Any:
 
 if __name__ == "__main__":
 	port = int(os.environ.get("PORT", "8000"))
-	app.run(host="0.0.0.0", port=port, debug=True)
+	debug = os.environ.get("DEBUG", "false").lower() == "true"
+	app.run(host="0.0.0.0", port=port, debug=debug, use_reloader=False)

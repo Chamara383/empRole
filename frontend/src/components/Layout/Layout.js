@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   FiBarChart2,
+  FiActivity,
   FiChevronDown,
   FiClock,
   FiDollarSign,
@@ -34,6 +35,7 @@ const Layout = ({ children }) => {
     { name: 'Timesheets', href: '/timesheets', icon: FiClock, roles: ['admin', 'manager', 'employee'] },
     { name: 'Expenses', href: '/expenses', icon: FiDollarSign, roles: ['admin', 'manager', 'employee'] },
     { name: 'Reports', href: '/reports', icon: FiBarChart2, roles: ['admin', 'manager', 'employee'] },
+    { name: 'Attrition', href: '/attrition-prediction', icon: FiActivity, roles: ['admin', 'manager'] },
   ];
 
   const filteredNavigation = navigation.filter(item =>
