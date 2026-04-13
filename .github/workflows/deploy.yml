@@ -118,7 +118,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           timeout: 120s
-          command_timeout: 30m
+          command_timeout: 60m
           script_stop: true
           script: |
             set -euo pipefail
@@ -131,6 +131,37 @@ jobs:
 
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-            # Pull and start in one step to reduce deploy fragility on EC2
-            sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans --pull always
+            echo "Disk usage before cleanup:"
+            df -h
+            sudo docker system df || true
+
+            # Always do a light cleanup to reclaim space from old layers/containers.
+            sudo docker container prune -f || true
+            sudo docker image prune -af || true
+            sudo docker builder prune -af || true
+
+            # If still close to full, also prune unused volumes.
+            ROOT_USAGE=$(df -P / | awk 'NR==2 {gsub("%", "", $5); print $5}')
+            if [ "$ROOT_USAGE" -ge 85 ]; then
+              echo "Root disk usage is ${ROOT_USAGE}%, pruning volumes..."
+              sudo docker volume prune -f || true
+            fi
+
+            echo "Disk usage after cleanup:"
+            df -h
+            sudo docker system df || true
+
+            # Retry pull/start to handle transient registry issues.
+            for i in 1 2 3; do
+              if sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans --pull always; then
+                break
+              fi
+              if [ "$i" -eq 3 ]; then
+                echo "Deploy failed after 3 attempts."
+                exit 1
+              fi
+              echo "Deploy attempt $i failed, retrying..."
+            done
+
+            sudo docker compose --env-file .env -f docker-compose.prod.yml ps
 
