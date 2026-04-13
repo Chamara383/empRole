@@ -117,11 +117,13 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 120s
+          command_timeout: 45m
+          script_stop: true
           script: |
             set -euo pipefail
             cd /srv/empRole
 
-            # Keep runtime backups before forcing repo sync
             TS="$(date +%Y%m%d-%H%M%S)"
             BACKUP_DIR="/srv/empRole-backup/${TS}"
             sudo mkdir -p "$BACKUP_DIR"
@@ -132,20 +134,20 @@ jobs:
               fi
             done
 
-            # Force server repo to exactly match main (no pull conflicts)
             sudo git fetch origin main
             sudo git reset --hard origin/main
             sudo git clean -fd
 
-            # Compose variable file used automatically by docker compose
             sudo tee .env >/dev/null <<'EOF'
             DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
             IMAGE_TAG=latest
             EOF
 
-            # Needed if Docker Hub repos are private
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+            # Pull explicitly first (can take time on EC2)
             sudo docker compose --env-file .env -f docker-compose.prod.yml pull
             sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans
+
+            # Optional cleanup
             sudo docker image prune -f
