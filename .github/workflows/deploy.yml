@@ -121,7 +121,7 @@ jobs:
             set -e
             cd /srv/empRole
 
-            git pull --ff-only origin main
+            sudo git pull --ff-only origin main
 
             export DOCKERHUB_USERNAME="${{ secrets.DOCKERHUB_USERNAME }}"
             export IMAGE_TAG="latest"
