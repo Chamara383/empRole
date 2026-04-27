@@ -143,6 +143,18 @@ jobs:
             echo "$DOCKERHUB_TOKEN" | $DOCKER_CMD login -u "$DOCKERHUB_USERNAME" --password-stdin
 
             export DOCKERHUB_USERNAME IMAGE_TAG
+
+            # Free disk before pulling new images on small EC2 volumes.
+            $DOCKER_CMD system df || true
+            $DOCKER_CMD container prune -f || true
+            $DOCKER_CMD image prune -af || true
+            $DOCKER_CMD builder prune -af || true
+
+            ROOT_USAGE="$(df -P / | awk 'NR==2 {gsub("%", "", $5); print $5}')"
+            if [ "${ROOT_USAGE:-0}" -ge 90 ]; then
+              $DOCKER_CMD volume prune -f || true
+            fi
+
             $DOCKER_CMD compose -f docker-compose.prod.yml down -v --remove-orphans
             $DOCKER_CMD compose -f docker-compose.prod.yml pull
             $DOCKER_CMD compose -f docker-compose.prod.yml up -d --force-recreate --renew-anon-volumes --remove-orphans
