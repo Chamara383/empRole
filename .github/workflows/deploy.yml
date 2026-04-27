@@ -1,186 +1,134 @@
-name: CI/CD
+name: Redeploy EmpRole
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   workflow_dispatch:
 
-concurrency:
-  group: emprole-prod
-  cancel-in-progress: true
+env:
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+  REACT_APP_API_URL: /api
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    # If you stored secrets under an Environment, uncomment and set name:
-    # environment: production
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: emprole-api-gateway
+            context: backend/services
+            dockerfile: gateway-service/Dockerfile
+          - image: emprole-auth-service
+            context: backend/services
+            dockerfile: auth-service/Dockerfile
+          - image: emprole-workforce-service
+            context: backend/services
+            dockerfile: workforce-service/Dockerfile
+          - image: emprole-finance-service
+            context: backend/services
+            dockerfile: finance-service/Dockerfile
+          - image: emprole-ml-service
+            context: backend/services
+            dockerfile: ml-service/Dockerfile
+          - image: emprole-frontend
+            context: frontend
+            dockerfile: Dockerfile
 
     steps:
-      - name: Checkout code
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate required secrets
-        env:
-          DH_USER: ${{ secrets.DOCKERHUB_USERNAME }}
-          DH_PASS: ${{ secrets.DOCKERHUB_PASSWORD }}
-          SSH_HOST: ${{ secrets.SERVER_HOST }}
-          SSH_USER: ${{ secrets.SERVER_USERNAME }}
-          SSH_KEY_B64: ${{ secrets.SSH_PRIVATE_KEY_B64 }}
-        run: |
-          [ -n "$DH_USER" ] || { echo "Missing DOCKERHUB_USERNAME"; exit 1; }
-          [ -n "$DH_PASS" ] || { echo "Missing DOCKERHUB_PASSWORD"; exit 1; }
-          [ -n "$SSH_HOST" ] || { echo "Missing SERVER_HOST"; exit 1; }
-          [ -n "$SSH_USER" ] || { echo "Missing SERVER_USERNAME"; exit 1; }
-          [ -n "$SSH_KEY_B64" ] || { echo "Missing SSH_PRIVATE_KEY_B64"; exit 1; }
-          echo "All required secrets are present."
-
-      - name: Prepare SSH key
-        run: |
-          set -euo pipefail
-          KEY_DECODED="$(printf '%s' "${{ secrets.SSH_PRIVATE_KEY_B64 }}" | tr -d ' \t\r\n' | base64 --decode)"
-          TMP_KEY="$(mktemp)"
-          printf '%s\n' "$KEY_DECODED" > "$TMP_KEY"
-          chmod 600 "$TMP_KEY"
-          # Fail early with a clear error if the key is malformed.
-          ssh-keygen -y -f "$TMP_KEY" >/dev/null
-          rm -f "$TMP_KEY"
-
-          DELIM="KEY_$(date +%s%N)"
-          {
-            echo "SSH_PRIVATE_KEY_DECODED<<$DELIM"
-            echo "$KEY_DECODED"
-            echo "$DELIM"
-          } >> "$GITHUB_ENV"
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: Build and push image
+        uses: docker/build-push-action@v6
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Build and push API gateway
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend/services
-          file: ./backend/services/gateway-service/Dockerfile
-          platforms: linux/amd64
+          context: ${{ matrix.context }}
+          file: ${{ matrix.context }}/${{ matrix.dockerfile }}
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-api-gateway:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-api-gateway:${{ github.sha }}
+            ${{ env.DOCKERHUB_USERNAME }}/${{ matrix.image }}:latest
+            ${{ env.DOCKERHUB_USERNAME }}/${{ matrix.image }}:${{ github.sha }}
+          no-cache: true
+          pull: true
 
-      - name: Build and push auth service
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend/services
-          file: ./backend/services/auth-service/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-auth-service:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-auth-service:${{ github.sha }}
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
 
-      - name: Build and push workforce service
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend/services
-          file: ./backend/services/workforce-service/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-workforce-service:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-workforce-service:${{ github.sha }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-      - name: Build and push finance service
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend/services
-          file: ./backend/services/finance-service/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-finance-service:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-finance-service:${{ github.sha }}
-        
-      - name: Build and push ml service
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend/services
-          file: ./backend/services/ml-service/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-ml-service:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-ml-service:${{ github.sha }}
+      - name: Prepare SSH key
+        id: ssh_key
+        run: |
+          key_path="$(mktemp)"
+          printf '%s' "$SSH_KEY_B64" | base64 --decode > "$key_path"
+          chmod 600 "$key_path"
+          echo "key_path=$key_path" >> "$GITHUB_OUTPUT"
+        env:
+          SSH_KEY_B64: ${{ secrets.DEPLOY_SSH_KEY_B64 }}
 
-      - name: Build and push frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-frontend:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/emprole-frontend:${{ github.sha }}
-
-      - name: Deploy to server
+      - name: Create deployment directory
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ env.SSH_PRIVATE_KEY_DECODED }}
-          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE }}
-          timeout: 120s
-          command_timeout: 60m
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key_path: ${{ steps.ssh_key.outputs.key_path }}
           script_stop: true
           script: |
             set -euo pipefail
-            cd /srv/empRole
+            mkdir -p "$DEPLOY_PATH"
 
-            sudo tee .env >/dev/null <<'EOF'
-            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-            IMAGE_TAG=latest
-            EOF
+      - name: Copy production compose file
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key_path: ${{ steps.ssh_key.outputs.key_path }}
+          source: docker-compose.prod.yml
+          target: ${{ env.DEPLOY_PATH }}
+          overwrite: true
 
-            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      - name: Redeploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DEPLOY_PATH: ${{ env.DEPLOY_PATH }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          IMAGE_TAG: ${{ github.sha }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          REACT_APP_API_URL: /api
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key_path: ${{ steps.ssh_key.outputs.key_path }}
+          script_stop: true
+          envs: DEPLOY_PATH,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN,IMAGE_TAG,MONGODB_URI,JWT_SECRET,REACT_APP_API_URL
+          script: |
+            set -euo pipefail
 
-            echo "Disk usage before cleanup:"
-            df -h
-            sudo docker system df || true
+            cd "$DEPLOY_PATH"
+            mkdir -p backend frontend
 
-            # Always do a light cleanup to reclaim space from old layers/containers.
-            sudo docker container prune -f || true
-            sudo docker image prune -af || true
-            sudo docker builder prune -af || true
+            printf 'MONGODB_URI=%s\nJWT_SECRET=%s\n' "$MONGODB_URI" "$JWT_SECRET" > backend/.env
+            printf 'REACT_APP_API_URL=%s\n' "$REACT_APP_API_URL" > frontend/.env
 
-            # If still close to full, also prune unused volumes.
-            ROOT_USAGE=$(df -P / | awk 'NR==2 {gsub("%", "", $5); print $5}')
-            if [ "$ROOT_USAGE" -ge 85 ]; then
-              echo "Root disk usage is ${ROOT_USAGE}%, pruning volumes..."
-              sudo docker volume prune -f || true
-            fi
+            echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
-            echo "Disk usage after cleanup:"
-            df -h
-            sudo docker system df || true
-
-            # Retry pull/start to handle transient registry issues.
-            for i in 1 2 3; do
-              if sudo docker compose --env-file .env -f docker-compose.prod.yml up -d --remove-orphans --pull always; then
-                break
-              fi
-              if [ "$i" -eq 3 ]; then
-                echo "Deploy failed after 3 attempts."
-                exit 1
-              fi
-              echo "Deploy attempt $i failed, retrying..."
-            done
-
-            sudo docker compose --env-file .env -f docker-compose.prod.yml ps
-
+            export DOCKERHUB_USERNAME IMAGE_TAG
+            docker compose -f docker-compose.prod.yml down -v --remove-orphans
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d --force-recreate --renew-anon-volumes --remove-orphans
