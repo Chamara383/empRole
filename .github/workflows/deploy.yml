@@ -93,6 +93,7 @@ jobs:
           script: |
             set -euo pipefail
             sudo mkdir -p "$DEPLOY_PATH"
+            sudo chown -R "$USER":"$USER" "$DEPLOY_PATH"
 
       - name: Copy production compose file
         uses: appleboy/scp-action@v0.1.7
