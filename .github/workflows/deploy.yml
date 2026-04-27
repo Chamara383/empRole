@@ -73,11 +73,12 @@ jobs:
       - name: Prepare SSH key
         id: ssh_key
         run: |
-          key_path="$GITHUB_WORKSPACE/.ssh/deploy_key"
-          mkdir -p "$(dirname "$key_path")"
-          printf '%s' "$SSH_KEY_B64" | base64 --decode > "$key_path"
-          chmod 600 "$key_path"
-          echo "key_path=$key_path" >> "$GITHUB_OUTPUT"
+          key_value="$(printf '%s' "$SSH_KEY_B64" | base64 --decode)"
+          {
+            echo 'key<<EOF'
+            printf '%s\n' "$key_value"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
         env:
           SSH_KEY_B64: ${{ secrets.DEPLOY_SSH_KEY_B64 }}
 
@@ -86,7 +87,7 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
-          key_path: ${{ steps.ssh_key.outputs.key_path }}
+          key: ${{ steps.ssh_key.outputs.key }}
           script_stop: true
           script: |
             set -euo pipefail
@@ -97,7 +98,7 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
-          key_path: ${{ steps.ssh_key.outputs.key_path }}
+          key: ${{ steps.ssh_key.outputs.key }}
           source: docker-compose.prod.yml
           target: ${{ env.DEPLOY_PATH }}
           overwrite: true
@@ -115,7 +116,7 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
-          key_path: ${{ steps.ssh_key.outputs.key_path }}
+          key: ${{ steps.ssh_key.outputs.key }}
           script_stop: true
           envs: DEPLOY_PATH,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN,IMAGE_TAG,MONGODB_URI,JWT_SECRET,REACT_APP_API_URL
           script: |
