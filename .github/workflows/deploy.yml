@@ -91,7 +91,7 @@ jobs:
           script_stop: true
           envs: DEPLOY_PATH
           script: |
-            sudo set -euo pipefail
+            set -euo pipefail
             sudo mkdir -p "$DEPLOY_PATH"
 
       - name: Copy production compose file
