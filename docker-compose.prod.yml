@@ -55,7 +55,7 @@ services:
   frontend:
     image: ${DOCKERHUB_USERNAME}/emprole-frontend:${IMAGE_TAG:-latest}
     ports:
-      - "80:5001"
+      - "80:80"
     env_file:
       - ./frontend/.env
     depends_on:
