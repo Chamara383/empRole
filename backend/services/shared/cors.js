@@ -17,6 +17,7 @@ const createCorsOptions = (extraOrigins = []) => {
     'http://127.0.0.1:5004',
     'http://127.0.0.1:5005',
     'http://67.202.16.83',
+    'http://34.200.221.234',
     process.env.FRONTEND_URL,
     ...extraOrigins,
   ].filter(Boolean);
