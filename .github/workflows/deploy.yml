@@ -127,12 +127,22 @@ jobs:
             cd "$DEPLOY_PATH"
             mkdir -p backend frontend
 
+            DOCKER_CMD="docker"
+            if ! docker info >/dev/null 2>&1; then
+              if sudo -n docker info >/dev/null 2>&1; then
+                DOCKER_CMD="sudo -n docker"
+              else
+                echo "Docker is not accessible for this user and passwordless sudo is unavailable."
+                exit 1
+              fi
+            fi
+
             printf 'MONGODB_URI=%s\nJWT_SECRET=%s\n' "$MONGODB_URI" "$JWT_SECRET" > backend/.env
             printf 'REACT_APP_API_URL=%s\n' "$REACT_APP_API_URL" > frontend/.env
 
-            echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            echo "$DOCKERHUB_TOKEN" | $DOCKER_CMD login -u "$DOCKERHUB_USERNAME" --password-stdin
 
             export DOCKERHUB_USERNAME IMAGE_TAG
-            docker compose -f docker-compose.prod.yml down -v --remove-orphans
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d --force-recreate --renew-anon-volumes --remove-orphans
+            $DOCKER_CMD compose -f docker-compose.prod.yml down -v --remove-orphans
+            $DOCKER_CMD compose -f docker-compose.prod.yml pull
+            $DOCKER_CMD compose -f docker-compose.prod.yml up -d --force-recreate --renew-anon-volumes --remove-orphans
