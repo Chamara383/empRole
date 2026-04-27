@@ -40,7 +40,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh
-          printf '%s' "${{ secrets.SSH_PRIVATE_KEY_B64 }}" | base64 --decode > ~/.ssh/deploy_key
+          KEY_INPUT="${{ secrets.SSH_PRIVATE_KEY_B64 }}"
+          if printf '%s' "$KEY_INPUT" | grep -q "BEGIN .*PRIVATE KEY"; then
+            printf '%s\n' "$KEY_INPUT" > ~/.ssh/deploy_key
+          else
+            printf '%s' "$KEY_INPUT" | tr -d ' \t\r\n' | base64 --decode > ~/.ssh/deploy_key
+          fi
           chmod 600 ~/.ssh/deploy_key
           # Fail early with a clear error if the key is malformed.
           ssh-keygen -y -f ~/.ssh/deploy_key >/dev/null
