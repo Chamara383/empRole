@@ -73,7 +73,8 @@ jobs:
       - name: Prepare SSH key
         id: ssh_key
         run: |
-          key_path="$(mktemp)"
+          key_path="$GITHUB_WORKSPACE/.ssh/deploy_key"
+          mkdir -p "$(dirname "$key_path")"
           printf '%s' "$SSH_KEY_B64" | base64 --decode > "$key_path"
           chmod 600 "$key_path"
           echo "key_path=$key_path" >> "$GITHUB_OUTPUT"
