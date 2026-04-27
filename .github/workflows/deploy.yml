@@ -39,16 +39,20 @@ jobs:
       - name: Prepare SSH key
         run: |
           set -euo pipefail
-          mkdir -p ~/.ssh
-          KEY_INPUT="${{ secrets.SSH_PRIVATE_KEY_B64 }}"
-          if printf '%s' "$KEY_INPUT" | grep -q "BEGIN .*PRIVATE KEY"; then
-            printf '%s\n' "$KEY_INPUT" > ~/.ssh/deploy_key
-          else
-            printf '%s' "$KEY_INPUT" | tr -d ' \t\r\n' | base64 --decode > ~/.ssh/deploy_key
-          fi
-          chmod 600 ~/.ssh/deploy_key
+          KEY_DECODED="$(printf '%s' "${{ secrets.SSH_PRIVATE_KEY_B64 }}" | tr -d ' \t\r\n' | base64 --decode)"
+          TMP_KEY="$(mktemp)"
+          printf '%s\n' "$KEY_DECODED" > "$TMP_KEY"
+          chmod 600 "$TMP_KEY"
           # Fail early with a clear error if the key is malformed.
-          ssh-keygen -y -f ~/.ssh/deploy_key >/dev/null
+          ssh-keygen -y -f "$TMP_KEY" >/dev/null
+          rm -f "$TMP_KEY"
+
+          DELIM="KEY_$(date +%s%N)"
+          {
+            echo "SSH_PRIVATE_KEY_DECODED<<$DELIM"
+            echo "$KEY_DECODED"
+            echo "$DELIM"
+          } >> "$GITHUB_ENV"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -130,7 +134,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key_path: /home/runner/.ssh/deploy_key
+          key: ${{ env.SSH_PRIVATE_KEY_DECODED }}
           passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE }}
           timeout: 120s
           command_timeout: 60m
