@@ -89,6 +89,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ steps.ssh_key.outputs.key }}
           script_stop: true
+          envs: DEPLOY_PATH
           script: |
             set -euo pipefail
             mkdir -p "$DEPLOY_PATH"
